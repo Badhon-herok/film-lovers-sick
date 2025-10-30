@@ -42,12 +42,12 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div style={{ width: '100%', padding: '48px 24px', textAlign: 'center' }}>
+      <div style={{ width: '100%', padding: 'clamp(32px, 5vw, 48px)', textAlign: 'center' }}>
         <p 
           style={{ 
             fontFamily: 'var(--font-cinzel)',
             color: '#c0c0c0',
-            fontSize: '20px'
+            fontSize: 'clamp(16px, 3vw, 20px)'
           }}
         >
           Loading the collection...
@@ -63,10 +63,10 @@ export default function Home() {
         style={{ 
           width: '100%',
           backgroundColor: '#0a0a0a',
-          paddingTop: '48px',
-          paddingBottom: '48px',
-          paddingLeft: '16px',
-          paddingRight: '16px'
+          paddingTop: 'clamp(32px, 8vw, 48px)',
+          paddingBottom: 'clamp(32px, 8vw, 48px)',
+          paddingLeft: 'clamp(16px, 2vw, 24px)',
+          paddingRight: 'clamp(16px, 2vw, 24px)'
         }}
       >
         <div style={{ 
@@ -85,8 +85,8 @@ export default function Home() {
               style={{ 
                 fontFamily: 'var(--font-creepster)',
                 color: '#a40000',
-                fontSize: 'clamp(2.5rem, 8vw, 4rem)',
-                marginBottom: '12px',
+                fontSize: 'clamp(2rem, 8vw, 4rem)',
+                marginBottom: 'clamp(8px, 2vw, 12px)',
                 textShadow: '0 0 20px rgba(164, 0, 0, 0.5)',
                 lineHeight: '1.2'
               }}
@@ -98,8 +98,8 @@ export default function Home() {
               style={{ 
                 fontFamily: 'var(--font-cinzel)',
                 color: '#c0c0c0',
-                fontSize: 'clamp(1.5rem, 5vw, 2rem)',
-                marginBottom: '16px',
+                fontSize: 'clamp(1.2rem, 5vw, 2rem)',
+                marginBottom: 'clamp(12px, 2vw, 16px)',
                 fontStyle: 'italic'
               }}
             >
@@ -109,8 +109,8 @@ export default function Home() {
             <p 
               style={{ 
                 color: '#a40000',
-                fontSize: 'clamp(0.875rem, 2vw, 1rem)',
-                marginBottom: '16px',
+                fontSize: 'clamp(0.8rem, 2vw, 1rem)',
+                marginBottom: 'clamp(12px, 2vw, 16px)',
                 lineHeight: '1.6',
                 maxWidth: '600px'
               }}
@@ -121,8 +121,8 @@ export default function Home() {
             <p 
               style={{ 
                 color: 'rgba(192, 192, 192, 0.8)',
-                fontSize: 'clamp(0.75rem, 2vw, 0.875rem)',
-                marginBottom: '24px',
+                fontSize: 'clamp(0.7rem, 1.8vw, 0.875rem)',
+                marginBottom: 'clamp(16px, 3vw, 24px)',
                 lineHeight: '1.6',
                 maxWidth: '600px'
               }}
@@ -134,17 +134,17 @@ export default function Home() {
             <div style={{ 
               display: 'flex',
               flexDirection: 'row',
-              gap: '12px',
+              gap: 'clamp(8px, 2vw, 12px)',
               justifyContent: 'center',
               flexWrap: 'wrap'
             }}>
               <Link
                 href="/films"
                 style={{
-                  padding: '10px 24px',
+                  padding: 'clamp(8px, 1.5vw, 10px) clamp(16px, 3vw, 24px)',
                   borderRadius: '6px',
                   fontWeight: 'bold',
-                  fontSize: '14px',
+                  fontSize: 'clamp(0.85rem, 2vw, 14px)',
                   border: '2px solid #a40000',
                   backgroundColor: '#a40000',
                   color: 'white',
@@ -159,10 +159,10 @@ export default function Home() {
               <a
                 href="#recent-films"
                 style={{
-                  padding: '10px 24px',
+                  padding: 'clamp(8px, 1.5vw, 10px) clamp(16px, 3vw, 24px)',
                   borderRadius: '6px',
                   fontWeight: 'bold',
-                  fontSize: '14px',
+                  fontSize: 'clamp(0.85rem, 2vw, 14px)',
                   border: '2px solid #8b0000',
                   backgroundColor: 'transparent',
                   color: '#c0c0c0',
@@ -179,19 +179,17 @@ export default function Home() {
         </div>
       </section>
 
-      
-            {/* Recent Films Section */}
-            {/* Recent Films Section */}
+      {/* Recent Films Section */}
       {recentFilms.length > 0 && (
         <section 
           id="recent-films"
           style={{ 
             width: '100%',
             backgroundColor: '#1a1a1a',
-            paddingTop: '32px',
-            paddingBottom: '32px',
-            paddingLeft: '16px',
-            paddingRight: '16px'
+            paddingTop: 'clamp(24px, 5vw, 32px)',
+            paddingBottom: 'clamp(24px, 5vw, 32px)',
+            paddingLeft: 'clamp(16px, 2vw, 24px)',
+            paddingRight: 'clamp(16px, 2vw, 24px)'
           }}
         >
           <div style={{ 
@@ -199,13 +197,13 @@ export default function Home() {
             marginLeft: 'auto',
             marginRight: 'auto'
           }}>
-            <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+            <div style={{ textAlign: 'center', marginBottom: 'clamp(16px, 3vw, 24px)' }}>
               <h2 
                 style={{ 
                   fontFamily: 'var(--font-creepster)',
                   color: '#a40000',
-                  fontSize: 'clamp(1.5rem, 5vw, 2.5rem)',
-                  marginBottom: '8px'
+                  fontSize: 'clamp(1.2rem, 5vw, 2.5rem)',
+                  marginBottom: 'clamp(6px, 1.5vw, 8px)'
                 }}
               >
                 Latest Films
@@ -217,33 +215,28 @@ export default function Home() {
                   backgroundColor: '#a40000',
                   marginLeft: 'auto',
                   marginRight: 'auto',
-                  marginBottom: '8px',
+                  marginBottom: 'clamp(6px, 1.5vw, 8px)',
                   borderRadius: '2px'
                 }}
               />
               <p 
                 style={{ 
                   color: 'rgba(192, 192, 192, 0.8)',
-                  fontSize: '0.875rem'
+                  fontSize: 'clamp(0.75rem, 1.8vw, 0.875rem)'
                 }}
               >
                 Recently added to our collection
               </p>
             </div>
 
-
             <div style={{ 
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
-              gap: '12px',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(clamp(120px, 25vw, 220px), 1fr))',
+              gap: 'clamp(8px, 2vw, 12px)',
               marginBottom: '24px'
             }}>
               {recentFilms.map((film) => (
-                <Link 
-                  key={film.id} 
-                  href={`/films/${film.id}`}
-                  style={{ display: 'block' }}
-                >
+                <Link key={film.id} href={`/films/${film.id}`} style={{ display: 'block' }}>
                   <div 
                     style={{ 
                       borderRadius: '6px',
@@ -269,7 +262,7 @@ export default function Home() {
                         src={film.posterUrl}
                         alt={film.name}
                         fill
-                        sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 20vw"
+                        sizes="(max-width: 480px) 40vw, (max-width: 768px) 30vw, (max-width: 1024px) 25vw, 20vw"
                         style={{
                           objectFit: 'contain',
                           padding: '4px',
@@ -285,11 +278,11 @@ export default function Home() {
                         bottom: 0,
                         left: 0,
                         right: 0,
-                        padding: '8px',
+                        padding: '6px',
                         backgroundColor: 'rgba(0, 0, 0, 0.95)',
                         opacity: 0,
                         transition: 'opacity 0.3s',
-                        fontSize: '11px',
+                        fontSize: '10px',
                         zIndex: 10,
                         pointerEvents: 'none'
                       }}
@@ -304,8 +297,8 @@ export default function Home() {
                         style={{ 
                           fontFamily: 'var(--font-cinzel)',
                           color: '#c0c0c0',
-                          fontSize: '11px',
-                          marginBottom: '4px',
+                          fontSize: '9px',
+                          marginBottom: '2px',
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
                           whiteSpace: 'nowrap'
@@ -316,49 +309,32 @@ export default function Home() {
                       <div style={{ 
                         display: 'flex',
                         justifyContent: 'space-between',
-                        fontSize: '10px'
+                        fontSize: '8px'
                       }}>
                         <span style={{ color: '#a40000' }}>
-                          ⭐ {film.letterboxdRating}/5
+                          ⭐ {film.letterboxdRating}
                         </span>
                         <span style={{ color: '#c0c0c0' }}>
                           {film.frameCount}f
                         </span>
                       </div>
-                      {film.isExplicit && (
-                        <span 
-                          style={{ 
-                            display: 'inline-block',
-                            marginTop: '4px',
-                            padding: '2px 4px',
-                            fontSize: '9px',
-                            fontWeight: 'bold',
-                            borderRadius: '2px',
-                            backgroundColor: '#a40000',
-                            color: 'white'
-                          }}
-                        >
-                          EXPLICIT
-                        </span>
-                      )}
                     </div>
                   </div>
                 </Link>
               ))}
             </div>
 
-
             <div style={{ textAlign: 'center' }}>
               <Link
                 href="/films"
                 style={{
                   display: 'inline-block',
-                  padding: '8px 20px',
+                  padding: 'clamp(6px, 1.5vw, 8px) clamp(16px, 2vw, 20px)',
                   borderRadius: '6px',
                   border: '2px solid #8b0000',
                   color: '#c0c0c0',
                   fontWeight: 'bold',
-                  fontSize: '14px',
+                  fontSize: 'clamp(0.8rem, 2vw, 14px)',
                   textDecoration: 'none',
                   transition: 'all 0.3s',
                   cursor: 'pointer'
@@ -371,30 +347,28 @@ export default function Home() {
         </section>
       )}
 
-
-
       {/* Recent Frames Section */}
       {recentFrames.length > 0 && (
         <section style={{ 
           width: '100%',
           backgroundColor: '#0a0a0a',
-          paddingTop: '48px',
-          paddingBottom: '48px',
-          paddingLeft: '16px',
-          paddingRight: '16px'
+          paddingTop: 'clamp(32px, 8vw, 48px)',
+          paddingBottom: 'clamp(32px, 8vw, 48px)',
+          paddingLeft: 'clamp(16px, 2vw, 24px)',
+          paddingRight: 'clamp(16px, 2vw, 24px)'
         }}>
           <div style={{ 
             maxWidth: '1280px',
             marginLeft: 'auto',
             marginRight: 'auto'
           }}>
-            <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+            <div style={{ textAlign: 'center', marginBottom: 'clamp(24px, 5vw, 40px)' }}>
               <h2 
                 style={{ 
                   fontFamily: 'var(--font-creepster)',
                   color: '#a40000',
-                  fontSize: 'clamp(2rem, 6vw, 3rem)',
-                  marginBottom: '8px'
+                  fontSize: 'clamp(1.5rem, 6vw, 3rem)',
+                  marginBottom: 'clamp(6px, 1.5vw, 8px)'
                 }}
               >
                 Latest Frames
@@ -406,14 +380,14 @@ export default function Home() {
                   backgroundColor: '#a40000',
                   marginLeft: 'auto',
                   marginRight: 'auto',
-                  marginBottom: '12px',
+                  marginBottom: 'clamp(8px, 2vw, 12px)',
                   borderRadius: '2px'
                 }}
               />
               <p 
                 style={{ 
                   color: 'rgba(192, 192, 192, 0.8)',
-                  fontSize: 'clamp(0.875rem, 2vw, 1rem)'
+                  fontSize: 'clamp(0.8rem, 2vw, 1rem)'
                 }}
               >
                 Recent frame captures
@@ -422,8 +396,8 @@ export default function Home() {
 
             <div style={{ 
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
-              gap: '16px'
+              gridTemplateColumns: 'repeat(auto-fill, minmax(clamp(100px, 20vw, 200px), 1fr))',
+              gap: 'clamp(8px, 2vw, 16px)'
             }}>
               {recentFrames.map((frame) => (
                 <Link key={frame.id} href={`/films/${frame.filmId}`}>
@@ -443,7 +417,7 @@ export default function Home() {
                       src={frame.imageUrl}
                       alt={frame.filmName}
                       fill
-                      sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                      sizes="(max-width: 480px) 45vw, (max-width: 768px) 35vw, (max-width: 1024px) 25vw, 20vw"
                       style={{
                         objectFit: 'cover'
                       }}
@@ -454,7 +428,7 @@ export default function Home() {
                           position: 'absolute',
                           top: '4px',
                           right: '4px',
-                          fontSize: '14px',
+                          fontSize: 'clamp(10px, 3vw, 14px)',
                           fontWeight: 'bold',
                           color: '#a40000',
                           zIndex: 10
@@ -475,10 +449,10 @@ export default function Home() {
       {recentFilms.length === 0 && recentFrames.length === 0 && (
         <section style={{ 
           width: '100%',
-          paddingTop: '80px',
-          paddingBottom: '80px',
-          paddingLeft: '16px',
-          paddingRight: '16px'
+          paddingTop: 'clamp(48px, 10vw, 80px)',
+          paddingBottom: 'clamp(48px, 10vw, 80px)',
+          paddingLeft: 'clamp(16px, 2vw, 24px)',
+          paddingRight: 'clamp(16px, 2vw, 24px)'
         }}>
           <div style={{ 
             maxWidth: '1280px',
@@ -490,8 +464,8 @@ export default function Home() {
               style={{ 
                 fontFamily: 'var(--font-cinzel)',
                 color: '#a40000',
-                fontSize: 'clamp(1.5rem, 5vw, 2.5rem)',
-                marginBottom: '16px'
+                fontSize: 'clamp(1.2rem, 5vw, 2.5rem)',
+                marginBottom: 'clamp(12px, 2vw, 16px)'
               }}
             >
               Coming Soon
@@ -499,7 +473,7 @@ export default function Home() {
             <p 
               style={{ 
                 color: 'rgba(192, 192, 192, 0.8)',
-                fontSize: 'clamp(0.875rem, 2vw, 1rem)'
+                fontSize: 'clamp(0.8rem, 2vw, 1rem)'
               }}
             >
               Check back soon for amazing films and frames.

@@ -39,8 +39,8 @@ export default function ManageFilms() {
 
   if (loading || loadingFilms) {
     return (
-      <div className="container mx-auto px-6 py-12 text-center">
-        <p style={{ color: '#c0c0c0' }}>Loading films...</p>
+      <div style={{ padding: 'clamp(32px, 5vw, 48px)', textAlign: 'center' }}>
+        <p style={{ color: '#c0c0c0', fontSize: 'clamp(14px, 2vw, 16px)' }}>Loading films...</p>
       </div>
     );
   }
@@ -48,75 +48,230 @@ export default function ManageFilms() {
   if (!user) return null;
 
   return (
-    <div className="container mx-auto px-6 py-12">
-      <div className="flex justify-between items-center mb-8">
+    <div style={{
+      maxWidth: '1400px',
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      padding: 'clamp(24px, 3vw, 48px) clamp(16px, 2vw, 24px)'
+    }}>
+      {/* Header */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 'clamp(20px, 4vw, 32px)',
+        flexWrap: 'wrap',
+        gap: '12px'
+      }}>
         <h1 
-          className="text-5xl"
           style={{ 
-            fontFamily: 'var(--font-cinzel)',
-            color: '#a40000'
+            fontFamily: 'var(--font-creepster)',
+            color: '#a40000',
+            fontSize: 'clamp(1.8rem, 6vw, 3rem)',
+            margin: 0
           }}
         >
           Manage Films
         </h1>
         <Link
           href="/admin/dashboard"
-          className="px-6 py-3 rounded border-2 font-bold hover:opacity-80"
           style={{
-            borderColor: '#8b0000',
-            color: '#c0c0c0'
+            padding: 'clamp(8px, 1.5vw, 12px) clamp(16px, 2vw, 24px)',
+            borderRadius: '6px',
+            border: '2px solid #8b0000',
+            color: '#c0c0c0',
+            textDecoration: 'none',
+            fontWeight: 'bold',
+            fontSize: 'clamp(0.85rem, 2vw, 1rem)',
+            display: 'inline-block',
+            backgroundColor: 'transparent',
+            transition: 'all 0.3s'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#8b0000';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
           }}
         >
-          Back to Dashboard
+          ← Back to Dashboard
         </Link>
       </div>
 
       {films.length === 0 ? (
-        <div className="text-center py-20">
-          <p style={{ color: '#c0c0c0' }}>No films uploaded yet.</p>
+        <div style={{
+          padding: 'clamp(40px, 8vw, 80px)',
+          textAlign: 'center',
+          backgroundColor: '#1a1a1a',
+          borderRadius: '8px',
+          border: '2px solid #8b0000'
+        }}>
+          <p style={{ 
+            color: '#c0c0c0',
+            fontSize: 'clamp(1rem, 2.5vw, 1.2rem)'
+          }}>
+            No films uploaded yet.
+          </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div style={{ 
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(clamp(150px, 25vw, 280px), 1fr))',
+          gap: 'clamp(16px, 2.5vw, 24px)'
+        }}>
           {films.map((film) => (
-            <Link key={film.id} href={`/admin/upload-frames/${film.id}`}>
-              <div 
-                className="rounded-lg border-2 overflow-hidden hover:opacity-80 transition-all cursor-pointer"
-                style={{ borderColor: '#8b0000' }}
-              >
+            <div
+              key={film.id}
+              style={{
+                borderRadius: '8px',
+                border: '2px solid #8b0000',
+                overflow: 'hidden',
+                backgroundColor: '#2d2d2d',
+                transition: 'all 0.3s',
+                display: 'flex',
+                flexDirection: 'column'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = '#a40000';
+                e.currentTarget.style.transform = 'scale(1.02)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = '#8b0000';
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+            >
+              {/* Poster Image */}
+              <div style={{ position: 'relative', paddingBottom: '150%', overflow: 'hidden' }}>
                 <Image
                   src={film.posterUrl}
                   alt={film.name}
-                  width={300}
-                  height={450}
-                  className="w-full h-96 object-cover"
+                  fill
+                  sizes="(max-width: 480px) 45vw, (max-width: 768px) 35vw, (max-width: 1024px) 28vw, 22vw"
+                  style={{ objectFit: 'cover' }}
                 />
-                <div className="p-4" style={{ backgroundColor: '#2d2d2d' }}>
-                  <h3 
-                    className="text-xl mb-2"
-                    style={{ 
-                      fontFamily: 'var(--font-cinzel)',
-                      color: '#c0c0c0'
+              </div>
+
+              {/* Film Info */}
+              <div style={{ padding: 'clamp(12px, 2vw, 16px)', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                <h3 
+                  style={{ 
+                    fontFamily: 'var(--font-cinzel)',
+                    color: '#c0c0c0',
+                    fontSize: 'clamp(0.9rem, 2vw, 1.1rem)',
+                    margin: '0 0 8px 0',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical',
+                    lineHeight: '1.3'
+                  }}
+                >
+                  {film.name}
+                </h3>
+
+                <p style={{ 
+                  color: '#a40000',
+                  fontSize: 'clamp(0.85rem, 1.8vw, 0.95rem)',
+                  margin: '4px 0',
+                  fontWeight: 'bold'
+                }}>
+                  ⭐ {film.letterboxdRating}/5
+                </p>
+
+                <p style={{ 
+                  color: '#c0c0c0',
+                  fontSize: 'clamp(0.8rem, 1.8vw, 0.9rem)',
+                  margin: '4px 0 12px 0'
+                }}>
+                  {film.frameCount} frame{film.frameCount !== 1 ? 's' : ''}
+                </p>
+
+                {film.isExplicit && (
+                  <span 
+                    style={{
+                      display: 'inline-block',
+                      padding: '4px 8px',
+                      fontSize: 'clamp(0.7rem, 1.5vw, 0.8rem)',
+                      borderRadius: '4px',
+                      backgroundColor: '#a40000',
+                      color: 'white',
+                      fontWeight: 'bold',
+                      marginBottom: '8px'
                     }}
                   >
-                    {film.name}
-                  </h3>
-                  <p style={{ color: '#a40000' }}>
-                    ⭐ {film.letterboxdRating}/5
-                  </p>
-                  <p style={{ color: '#c0c0c0', fontSize: '0.9rem' }}>
-                    {film.frameCount} frames
-                  </p>
-                  {film.isExplicit && (
-                    <span 
-                      className="inline-block mt-2 px-3 py-1 text-xs rounded"
-                      style={{ backgroundColor: '#a40000', color: 'white' }}
-                    >
-                      EXPLICIT
-                    </span>
-                  )}
+                    ⚠️ EXPLICIT
+                  </span>
+                )}
+
+                {/* Buttons */}
+                <div style={{
+                  display: 'flex',
+                  gap: '8px',
+                  marginTop: 'auto'
+                }}>
+                  {/* Upload Frames Button */}
+                  <Link
+                    href={`/admin/upload-frames/${film.id}`}
+                    style={{
+                      flex: 1,
+                      padding: 'clamp(6px, 1.2vw, 8px) clamp(8px, 1.5vw, 12px)',
+                      backgroundColor: '#a40000',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      textDecoration: 'none',
+                      fontWeight: 'bold',
+                      fontSize: 'clamp(0.75rem, 1.6vw, 0.85rem)',
+                      textAlign: 'center',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s',
+                      display: 'block'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#ff0000';
+                      e.currentTarget.style.transform = 'scale(1.05)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = '#a40000';
+                      e.currentTarget.style.transform = 'scale(1)';
+                    }}
+                  >
+                    📤 Upload
+                  </Link>
+
+                  {/* View Frames Button */}
+                  <Link
+                    href={`/films/${film.id}`}
+                    style={{
+                      flex: 1,
+                      padding: 'clamp(6px, 1.2vw, 8px) clamp(8px, 1.5vw, 12px)',
+                      backgroundColor: 'transparent',
+                      color: '#c0c0c0',
+                      border: '2px solid #8b0000',
+                      borderRadius: '4px',
+                      textDecoration: 'none',
+                      fontWeight: 'bold',
+                      fontSize: 'clamp(0.75rem, 1.6vw, 0.85rem)',
+                      textAlign: 'center',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s',
+                      display: 'block'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#8b0000';
+                      e.currentTarget.style.color = 'white';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                      e.currentTarget.style.color = '#c0c0c0';
+                    }}
+                  >
+                    👁️ View
+                  </Link>
                 </div>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
       )}

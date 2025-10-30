@@ -74,20 +74,23 @@ export default function Header() {
           flexWrap: 'wrap',
           justifyContent: 'flex-end'
         }}>
-          {/* Explicit Button - ALWAYS VISIBLE */}
+          {/* Explicit Button - ALWAYS VISIBLE WITH CLEAR STATUS */}
           <button
             onClick={handleToggleExplicit}
             style={{
-              padding: 'clamp(6px, 1vw, 8px) clamp(8px, 1.2vw, 12px)',
+              padding: 'clamp(6px, 1vw, 8px) clamp(10px, 1.5vw, 14px)',
               backgroundColor: explicitMode ? '#a40000' : 'transparent',
               color: '#c0c0c0',
               border: '2px solid #8b0000',
               borderRadius: '4px',
               cursor: 'pointer',
-              fontSize: 'clamp(0.65rem, 1.6vw, 0.8rem)',
+              fontSize: 'clamp(0.7rem, 1.8vw, 0.9rem)',
               fontWeight: 'bold',
               whiteSpace: 'nowrap',
-              transition: 'all 0.3s'
+              transition: 'all 0.3s',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = '#a40000';
@@ -101,17 +104,18 @@ export default function Header() {
             }}
             title="Toggle explicit content"
           >
-            {explicitMode ? '👁️' : '👁️‍🗨️'}
+            <span>{explicitMode ? '🔴' : '⭕'}</span>
+            <span>Explicit</span>
           </button>
 
           {/* Admin Button - ALWAYS VISIBLE */}
           <Link 
             href="/admin" 
             style={{
-              padding: 'clamp(6px, 1vw, 8px) clamp(8px, 1.2vw, 12px)',
+              padding: 'clamp(6px, 1vw, 8px) clamp(10px, 1.5vw, 14px)',
               color: '#c0c0c0',
               textDecoration: 'none',
-              fontSize: 'clamp(0.65rem, 1.6vw, 0.8rem)',
+              fontSize: 'clamp(0.7rem, 1.8vw, 0.9rem)',
               fontWeight: 'bold',
               border: '2px solid #a40000',
               borderRadius: '4px',
@@ -139,13 +143,13 @@ export default function Header() {
             <button
               onClick={handleLogout}
               style={{
-                padding: 'clamp(6px, 1vw, 8px) clamp(8px, 1.2vw, 12px)',
+                padding: 'clamp(6px, 1vw, 8px) clamp(10px, 1.5vw, 14px)',
                 backgroundColor: '#8b0000',
                 color: 'white',
                 border: '2px solid #8b0000',
                 borderRadius: '4px',
                 cursor: 'pointer',
-                fontSize: 'clamp(0.65rem, 1.6vw, 0.8rem)',
+                fontSize: 'clamp(0.7rem, 1.8vw, 0.9rem)',
                 fontWeight: 'bold',
                 whiteSpace: 'nowrap',
                 transition: 'all 0.3s'

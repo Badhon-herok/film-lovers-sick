@@ -66,24 +66,25 @@ export default function Header() {
           </h1>
         </Link>
 
-        {/* Desktop Controls (Always Visible) */}
+        {/* Desktop/Mobile Controls */}
         <div style={{
           display: 'flex',
-          gap: 'clamp(8px, 1.5vw, 12px)',
+          gap: 'clamp(6px, 1.5vw, 12px)',
           alignItems: 'center',
-          flexWrap: 'wrap'
+          flexWrap: 'wrap',
+          justifyContent: 'flex-end'
         }}>
           {/* Explicit Button - ALWAYS VISIBLE */}
           <button
             onClick={handleToggleExplicit}
             style={{
-              padding: 'clamp(6px, 1vw, 8px) clamp(10px, 1.5vw, 14px)',
+              padding: 'clamp(6px, 1vw, 8px) clamp(8px, 1.2vw, 12px)',
               backgroundColor: explicitMode ? '#a40000' : 'transparent',
               color: '#c0c0c0',
               border: '2px solid #8b0000',
               borderRadius: '4px',
               cursor: 'pointer',
-              fontSize: 'clamp(0.7rem, 1.8vw, 0.85rem)',
+              fontSize: 'clamp(0.65rem, 1.6vw, 0.8rem)',
               fontWeight: 'bold',
               whiteSpace: 'nowrap',
               transition: 'all 0.3s'
@@ -98,51 +99,53 @@ export default function Header() {
               }
               e.currentTarget.style.borderColor = '#8b0000';
             }}
+            title="Toggle explicit content"
           >
-            {explicitMode ? '👁️ Explicit' : '👁️ Hide'}
+            {explicitMode ? '👁️' : '👁️‍🗨️'}
           </button>
 
-          {/* Admin Link - ALWAYS VISIBLE IF LOGGED IN */}
-          {user && (
-            <Link 
-              href="/admin" 
-              style={{
-                padding: 'clamp(6px, 1vw, 8px) clamp(10px, 1.5vw, 14px)',
-                color: '#c0c0c0',
-                textDecoration: 'none',
-                fontSize: 'clamp(0.7rem, 1.8vw, 0.85rem)',
-                fontWeight: 'bold',
-                border: '2px solid #8b0000',
-                borderRadius: '4px',
-                backgroundColor: 'transparent',
-                display: 'inline-block',
-                whiteSpace: 'nowrap',
-                transition: 'all 0.3s',
-                cursor: 'pointer'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#8b0000';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
-              }}
-            >
-              ⚙️ Admin
-            </Link>
-          )}
+          {/* Admin Button - ALWAYS VISIBLE */}
+          <Link 
+            href="/admin" 
+            style={{
+              padding: 'clamp(6px, 1vw, 8px) clamp(8px, 1.2vw, 12px)',
+              color: '#c0c0c0',
+              textDecoration: 'none',
+              fontSize: 'clamp(0.65rem, 1.6vw, 0.8rem)',
+              fontWeight: 'bold',
+              border: '2px solid #a40000',
+              borderRadius: '4px',
+              backgroundColor: 'transparent',
+              display: 'inline-block',
+              whiteSpace: 'nowrap',
+              transition: 'all 0.3s',
+              cursor: 'pointer'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#a40000';
+              e.currentTarget.style.color = 'white';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'transparent';
+              e.currentTarget.style.color = '#c0c0c0';
+            }}
+            title="Go to admin panel"
+          >
+            ⚙️ Admin
+          </Link>
 
-          {/* Logout Button - ONLY VISIBLE IF LOGGED IN */}
+          {/* Logout Button - ONLY IF LOGGED IN */}
           {user && (
             <button
               onClick={handleLogout}
               style={{
-                padding: 'clamp(6px, 1vw, 8px) clamp(10px, 1.5vw, 14px)',
+                padding: 'clamp(6px, 1vw, 8px) clamp(8px, 1.2vw, 12px)',
                 backgroundColor: '#8b0000',
                 color: 'white',
-                border: 'none',
+                border: '2px solid #8b0000',
                 borderRadius: '4px',
                 cursor: 'pointer',
-                fontSize: 'clamp(0.7rem, 1.8vw, 0.85rem)',
+                fontSize: 'clamp(0.65rem, 1.6vw, 0.8rem)',
                 fontWeight: 'bold',
                 whiteSpace: 'nowrap',
                 transition: 'all 0.3s'
@@ -153,6 +156,7 @@ export default function Header() {
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = '#8b0000';
               }}
+              title="Logout from admin"
             >
               Logout
             </button>
@@ -164,22 +168,23 @@ export default function Header() {
             style={{
               display: 'flex',
               flexDirection: 'column',
-              gap: '5px',
+              gap: '4px',
               background: 'none',
               border: 'none',
               cursor: 'pointer',
-              padding: '8px',
-              marginLeft: 'clamp(8px, 1vw, 12px)'
+              padding: '4px',
+              marginLeft: 'clamp(4px, 1vw, 8px)'
             }}
+            title="Toggle menu"
           >
-            <div style={{ width: '24px', height: '2px', backgroundColor: '#a40000' }} />
-            <div style={{ width: '24px', height: '2px', backgroundColor: '#a40000' }} />
-            <div style={{ width: '24px', height: '2px', backgroundColor: '#a40000' }} />
+            <div style={{ width: '20px', height: '2px', backgroundColor: '#a40000', transition: 'all 0.3s' }} />
+            <div style={{ width: '20px', height: '2px', backgroundColor: '#a40000', transition: 'all 0.3s' }} />
+            <div style={{ width: '20px', height: '2px', backgroundColor: '#a40000', transition: 'all 0.3s' }} />
           </button>
         </div>
       </div>
 
-      {/* Mobile Menu - Additional Options */}
+      {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div style={{
           backgroundColor: '#1a1a1a',
@@ -187,16 +192,16 @@ export default function Header() {
           padding: 'clamp(12px, 2vw, 16px)',
           display: 'flex',
           flexDirection: 'column',
-          gap: '12px'
+          gap: '10px'
         }}>
           <Link 
             href="/films" 
             style={{
               color: '#c0c0c0',
               textDecoration: 'none',
-              fontSize: 'clamp(13px, 2.5vw, 16px)',
+              fontSize: 'clamp(12px, 2.5vw, 15px)',
               fontWeight: 'bold',
-              padding: '10px',
+              padding: '8px',
               borderBottom: '1px solid #2d2d2d',
               display: 'block'
             }}
@@ -205,46 +210,26 @@ export default function Header() {
             📽️ Browse Films
           </Link>
 
-          {user && (
-            <Link 
-              href="/admin" 
-              style={{
-                color: '#a40000',
-                textDecoration: 'none',
-                fontSize: 'clamp(13px, 2.5vw, 16px)',
-                fontWeight: 'bold',
-                padding: '10px',
-                borderBottom: '1px solid #2d2d2d',
-                display: 'block'
-              }}
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              ⚙️ Admin Panel
-            </Link>
-          )}
-
-          {user && (
-            <button
-              onClick={() => {
-                handleLogout();
-                setMobileMenuOpen(false);
-              }}
-              style={{
-                padding: '10px',
-                backgroundColor: '#8b0000',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontSize: 'clamp(13px, 2.5vw, 16px)',
-                fontWeight: 'bold',
-                width: '100%',
-                textAlign: 'left'
-              }}
-            >
-              Logout
-            </button>
-          )}
+          <div style={{
+            display: 'flex',
+            gap: '8px',
+            paddingTop: '8px'
+          }}>
+            <span style={{
+              color: 'rgba(192, 192, 192, 0.5)',
+              fontSize: 'clamp(10px, 2vw, 12px)',
+              marginTop: '4px'
+            }}>
+              Status:
+            </span>
+            <span style={{
+              color: user ? '#a40000' : '#c0c0c0',
+              fontSize: 'clamp(10px, 2vw, 12px)',
+              fontWeight: 'bold'
+            }}>
+              {user ? '🔓 Admin' : '🔒 Public'}
+            </span>
+          </div>
         </div>
       )}
     </header>

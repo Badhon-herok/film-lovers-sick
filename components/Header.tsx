@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
@@ -12,6 +12,13 @@ export default function Header() {
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [explicitMode, setExplicitMode] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    const saved = localStorage.getItem('explicitMode');
+    if (saved) setExplicitMode(JSON.parse(saved));
+  }, []);
 
   const handleToggleExplicit = () => {
     const newMode = !explicitMode;
@@ -24,6 +31,8 @@ export default function Header() {
     await signOut(auth);
     router.push('/');
   };
+
+  if (!mounted) return null;
 
   return (
     <header style={{
@@ -57,76 +66,120 @@ export default function Header() {
           </h1>
         </Link>
 
-        {/* Desktop Navigation */}
-        <nav style={{ display: 'none' }}>
-          {/* Hidden on mobile, shown on desktop via CSS */}
-        </nav>
-
-        {/* Mobile Menu Button */}
-        <button
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '5px',
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            padding: '8px'
-          }}
-        >
-          <div style={{ width: '24px', height: '2px', backgroundColor: '#a40000' }} />
-          <div style={{ width: '24px', height: '2px', backgroundColor: '#a40000' }} />
-          <div style={{ width: '24px', height: '2px', backgroundColor: '#a40000' }} />
-        </button>
-
-        {/* Desktop Controls */}
+        {/* Desktop Controls (Always Visible) */}
         <div style={{
-          display: 'none',
-          gap: 'clamp(8px, 2vw, 16px)',
-          alignItems: 'center'
+          display: 'flex',
+          gap: 'clamp(8px, 1.5vw, 12px)',
+          alignItems: 'center',
+          flexWrap: 'wrap'
         }}>
+          {/* Explicit Button - ALWAYS VISIBLE */}
           <button
             onClick={handleToggleExplicit}
             style={{
-              padding: '6px 12px',
+              padding: 'clamp(6px, 1vw, 8px) clamp(10px, 1.5vw, 14px)',
               backgroundColor: explicitMode ? '#a40000' : 'transparent',
               color: '#c0c0c0',
               border: '2px solid #8b0000',
               borderRadius: '4px',
               cursor: 'pointer',
-              fontSize: '12px',
-              fontWeight: 'bold'
+              fontSize: 'clamp(0.7rem, 1.8vw, 0.85rem)',
+              fontWeight: 'bold',
+              whiteSpace: 'nowrap',
+              transition: 'all 0.3s'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#a40000';
+              e.currentTarget.style.borderColor = '#ff0000';
+            }}
+            onMouseLeave={(e) => {
+              if (!explicitMode) {
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }
+              e.currentTarget.style.borderColor = '#8b0000';
             }}
           >
-            {explicitMode ? '👁️ Explicit' : '👁️ Hide Explicit'}
+            {explicitMode ? '👁️ Explicit' : '👁️ Hide'}
           </button>
+
+          {/* Admin Link - ALWAYS VISIBLE IF LOGGED IN */}
           {user && (
-            <>
-              <Link href="/admin" style={{ color: '#c0c0c0', textDecoration: 'none', fontSize: '14px', fontWeight: 'bold' }}>
-                Admin
-              </Link>
-              <button
-                onClick={handleLogout}
-                style={{
-                  padding: '6px 12px',
-                  backgroundColor: '#8b0000',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontSize: '12px',
-                  fontWeight: 'bold'
-                }}
-              >
-                Logout
-              </button>
-            </>
+            <Link 
+              href="/admin" 
+              style={{
+                padding: 'clamp(6px, 1vw, 8px) clamp(10px, 1.5vw, 14px)',
+                color: '#c0c0c0',
+                textDecoration: 'none',
+                fontSize: 'clamp(0.7rem, 1.8vw, 0.85rem)',
+                fontWeight: 'bold',
+                border: '2px solid #8b0000',
+                borderRadius: '4px',
+                backgroundColor: 'transparent',
+                display: 'inline-block',
+                whiteSpace: 'nowrap',
+                transition: 'all 0.3s',
+                cursor: 'pointer'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#8b0000';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }}
+            >
+              ⚙️ Admin
+            </Link>
           )}
+
+          {/* Logout Button - ONLY VISIBLE IF LOGGED IN */}
+          {user && (
+            <button
+              onClick={handleLogout}
+              style={{
+                padding: 'clamp(6px, 1vw, 8px) clamp(10px, 1.5vw, 14px)',
+                backgroundColor: '#8b0000',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: 'clamp(0.7rem, 1.8vw, 0.85rem)',
+                fontWeight: 'bold',
+                whiteSpace: 'nowrap',
+                transition: 'all 0.3s'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#a40000';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#8b0000';
+              }}
+            >
+              Logout
+            </button>
+          )}
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '5px',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '8px',
+              marginLeft: 'clamp(8px, 1vw, 12px)'
+            }}
+          >
+            <div style={{ width: '24px', height: '2px', backgroundColor: '#a40000' }} />
+            <div style={{ width: '24px', height: '2px', backgroundColor: '#a40000' }} />
+            <div style={{ width: '24px', height: '2px', backgroundColor: '#a40000' }} />
+          </button>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu - Additional Options */}
       {mobileMenuOpen && (
         <div style={{
           backgroundColor: '#1a1a1a',
@@ -136,24 +189,6 @@ export default function Header() {
           flexDirection: 'column',
           gap: '12px'
         }}>
-          <button
-            onClick={handleToggleExplicit}
-            style={{
-              padding: '10px 16px',
-              backgroundColor: explicitMode ? '#a40000' : 'transparent',
-              color: '#c0c0c0',
-              border: '2px solid #8b0000',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: 'clamp(12px, 2vw, 14px)',
-              fontWeight: 'bold',
-              width: '100%',
-              textAlign: 'left'
-            }}
-          >
-            {explicitMode ? '👁️ Explicit ON' : '👁️ Show Explicit'}
-          </button>
-
           <Link 
             href="/films" 
             style={{
@@ -161,51 +196,54 @@ export default function Header() {
               textDecoration: 'none',
               fontSize: 'clamp(13px, 2.5vw, 16px)',
               fontWeight: 'bold',
-              padding: '8px 0',
-              borderBottom: '1px solid #2d2d2d'
+              padding: '10px',
+              borderBottom: '1px solid #2d2d2d',
+              display: 'block'
             }}
             onClick={() => setMobileMenuOpen(false)}
           >
-            Browse Films
+            📽️ Browse Films
           </Link>
 
           {user && (
-            <>
-              <Link 
-                href="/admin" 
-                style={{
-                  color: '#a40000',
-                  textDecoration: 'none',
-                  fontSize: 'clamp(13px, 2.5vw, 16px)',
-                  fontWeight: 'bold',
-                  padding: '8px 0',
-                  borderBottom: '1px solid #2d2d2d'
-                }}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Admin Panel
-              </Link>
-              <button
-                onClick={() => {
-                  handleLogout();
-                  setMobileMenuOpen(false);
-                }}
-                style={{
-                  padding: '10px 16px',
-                  backgroundColor: '#8b0000',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontSize: 'clamp(13px, 2.5vw, 16px)',
-                  fontWeight: 'bold',
-                  width: '100%',
-                  textAlign: 'left'
-                }}
-              >
-                Logout
-              </button>
-            </>
+            <Link 
+              href="/admin" 
+              style={{
+                color: '#a40000',
+                textDecoration: 'none',
+                fontSize: 'clamp(13px, 2.5vw, 16px)',
+                fontWeight: 'bold',
+                padding: '10px',
+                borderBottom: '1px solid #2d2d2d',
+                display: 'block'
+              }}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              ⚙️ Admin Panel
+            </Link>
+          )}
+
+          {user && (
+            <button
+              onClick={() => {
+                handleLogout();
+                setMobileMenuOpen(false);
+              }}
+              style={{
+                padding: '10px',
+                backgroundColor: '#8b0000',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: 'clamp(13px, 2.5vw, 16px)',
+                fontWeight: 'bold',
+                width: '100%',
+                textAlign: 'left'
+              }}
+            >
+              Logout
+            </button>
           )}
         </div>
       )}

@@ -5,7 +5,6 @@ import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { getFilmById, addFrame, uploadImage } from '@/lib/firebaseHelpers';
 import { Film } from '@/lib/firestoreSchema';
-import { Timestamp } from 'firebase/firestore';
 
 export default function UploadFrames() {
   const { filmId } = useParams();
@@ -63,14 +62,14 @@ export default function UploadFrames() {
           filmName: film.name,
           imageUrl,
           isExplicit,
-          uploadedAt: Timestamp.now(),
+          uploadedAt: new Date(),
           order: film.frameCount + i + 1,
         });
 
         setProgress(Math.round(((i + 1) / frameFiles.length) * 100));
       }
 
-      alert('Frames uploaded successfully!');
+      alert('✅ Frames uploaded successfully!');
       router.push('/admin/manage-films');
     } catch (error) {
       console.error('Error uploading frames:', error);
@@ -82,7 +81,7 @@ export default function UploadFrames() {
 
   if (loading || !film) {
     return (
-      <div className="container mx-auto px-6 py-12 text-center">
+      <div style={{ textAlign: 'center', padding: '48px 24px' }}>
         <p style={{ color: '#c0c0c0' }}>Loading...</p>
       </div>
     );
@@ -91,29 +90,39 @@ export default function UploadFrames() {
   if (!user) return null;
 
   return (
-    <div className="container mx-auto px-6 py-12 max-w-2xl">
+    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '48px 24px' }}>
       <h1 
-        className="text-5xl mb-4"
         style={{ 
-          fontFamily: 'var(--font-cinzel)',
-          color: '#a40000'
+          fontFamily: 'var(--font-creepster)',
+          color: '#a40000',
+          fontSize: '2.5rem',
+          marginBottom: '16px'
         }}
       >
         Upload Frames
       </h1>
       <h2 
-        className="text-2xl mb-8"
         style={{ 
           fontFamily: 'var(--font-cinzel)',
-          color: '#c0c0c0'
+          color: '#c0c0c0',
+          fontSize: '1.5rem',
+          marginBottom: '32px'
         }}
       >
         For: {film.name}
       </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '24px' }}>
+        {/* File Input */}
         <div>
-          <label className="block mb-2" style={{ color: '#c0c0c0' }}>
+          <label 
+            style={{ 
+              display: 'block',
+              marginBottom: '8px',
+              color: '#c0c0c0',
+              fontWeight: 'bold'
+            }}
+          >
             Select Frame Images (Multiple) *
           </label>
           <input
@@ -122,64 +131,98 @@ export default function UploadFrames() {
             multiple
             onChange={handleFilesChange}
             required
-            className="w-full px-4 py-3 rounded border-2"
             style={{
-              backgroundColor: '#0a0a0a',
-              borderColor: '#8b0000',
-              color: '#c0c0c0'
+              width: '100%',
+              padding: '12px',
+              borderRadius: '6px',
+              border: '2px solid #8b0000',
+              backgroundColor: '#2d2d2d',
+              color: '#c0c0c0',
+              fontSize: '14px',
+              cursor: 'pointer'
             }}
           />
           {frameFiles.length > 0 && (
-            <p className="mt-2" style={{ color: '#c0c0c0' }}>
-              {frameFiles.length} file(s) selected
+            <p style={{ marginTop: '8px', color: '#a40000', fontSize: '14px' }}>
+              ✓ {frameFiles.length} file(s) selected
             </p>
           )}
         </div>
 
-        <div className="flex items-center gap-3">
+        {/* Explicit Checkbox */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <input
             type="checkbox"
             id="explicit"
             checked={isExplicit}
             onChange={(e) => setIsExplicit(e.target.checked)}
-            className="w-5 h-5"
+            style={{
+              width: '20px',
+              height: '20px',
+              cursor: 'pointer'
+            }}
           />
-          <label htmlFor="explicit" style={{ color: '#c0c0c0' }}>
+          <label 
+            htmlFor="explicit" 
+            style={{ color: '#c0c0c0', cursor: 'pointer' }}
+          >
             Mark frames as Explicit
           </label>
         </div>
 
+        {/* Progress Bar */}
         {uploading && (
           <div>
             <div 
-              className="w-full h-4 rounded"
-              style={{ backgroundColor: '#0a0a0a' }}
+              style={{
+                width: '100%',
+                height: '16px',
+                borderRadius: '8px',
+                backgroundColor: '#0a0a0a',
+                border: '2px solid #8b0000',
+                overflow: 'hidden'
+              }}
             >
               <div 
-                className="h-full rounded transition-all"
                 style={{ 
+                  height: '100%',
                   width: `${progress}%`,
-                  backgroundColor: '#a40000'
+                  backgroundColor: '#a40000',
+                  transition: 'width 0.3s ease'
                 }}
               />
             </div>
-            <p className="text-center mt-2" style={{ color: '#c0c0c0' }}>
+            <p 
+              style={{ 
+                textAlign: 'center',
+                marginTop: '12px',
+                color: '#c0c0c0',
+                fontWeight: 'bold'
+              }}
+            >
               Uploading: {progress}%
             </p>
           </div>
         )}
 
+        {/* Submit Button */}
         <button
           type="submit"
-          disabled={uploading}
-          className="w-full py-3 rounded font-bold transition-all"
+          disabled={uploading || frameFiles.length === 0}
           style={{
-            backgroundColor: '#a40000',
+            padding: '12px 24px',
+            borderRadius: '6px',
+            fontWeight: 'bold',
+            fontSize: '16px',
+            backgroundColor: uploading || frameFiles.length === 0 ? '#666' : '#a40000',
             color: 'white',
-            opacity: uploading ? 0.7 : 1
+            border: 'none',
+            cursor: uploading || frameFiles.length === 0 ? 'not-allowed' : 'pointer',
+            opacity: uploading ? 0.7 : 1,
+            transition: 'all 0.3s'
           }}
         >
-          {uploading ? `Uploading... ${progress}%` : 'Upload Frames'}
+          {uploading ? `⏳ Uploading... ${progress}%` : '✓ Upload Frames'}
         </button>
       </form>
     </div>

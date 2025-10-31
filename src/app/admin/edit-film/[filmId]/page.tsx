@@ -79,8 +79,8 @@ export default function EditFilm() {
         name: formData.name,
         releaseYear: formData.releaseYear ? parseInt(formData.releaseYear) : undefined,
         director: formData.director || undefined,
-        genre: formData.genre ? formData.genre.split(',').map(g => g.trim()) : [],
-        cast: formData.cast ? formData.cast.split(',').map(c => c.trim()) : [],
+        genre: formData.genre ? formData.genre.split(',').map(g => g.trim()).filter(g => g) : [],
+        cast: formData.cast ? formData.cast.split(',').map(c => c.trim()).filter(c => c) : [],
         plot: formData.plot || undefined,
         letterboxdRating: parseFloat(formData.letterboxdRating),
         letterboxdLink: formData.letterboxdLink,
@@ -148,7 +148,8 @@ export default function EditFilm() {
               border: '2px solid #8b0000',
               backgroundColor: '#2d2d2d',
               color: '#c0c0c0',
-              fontSize: 'clamp(0.9rem, 2vw, 1rem)'
+              fontSize: 'clamp(0.9rem, 2vw, 1rem)',
+              boxSizing: 'border-box'
             }}
           />
         </div>
@@ -171,7 +172,8 @@ export default function EditFilm() {
                 border: '2px solid #8b0000',
                 backgroundColor: '#2d2d2d',
                 color: '#c0c0c0',
-                fontSize: 'clamp(0.85rem, 2vw, 0.95rem)'
+                fontSize: 'clamp(0.85rem, 2vw, 0.95rem)',
+                boxSizing: 'border-box'
               }}
             />
           </div>
@@ -196,7 +198,8 @@ export default function EditFilm() {
                 border: '2px solid #8b0000',
                 backgroundColor: '#2d2d2d',
                 color: '#c0c0c0',
-                fontSize: 'clamp(0.85rem, 2vw, 0.95rem)'
+                fontSize: 'clamp(0.85rem, 2vw, 0.95rem)',
+                boxSizing: 'border-box'
               }}
             />
           </div>
@@ -218,7 +221,8 @@ export default function EditFilm() {
               border: '2px solid #8b0000',
               backgroundColor: '#2d2d2d',
               color: '#c0c0c0',
-              fontSize: 'clamp(0.9rem, 2vw, 1rem)'
+              fontSize: 'clamp(0.9rem, 2vw, 1rem)',
+              boxSizing: 'border-box'
             }}
           />
         </div>
@@ -240,7 +244,8 @@ export default function EditFilm() {
               border: '2px solid #8b0000',
               backgroundColor: '#2d2d2d',
               color: '#c0c0c0',
-              fontSize: 'clamp(0.9rem, 2vw, 1rem)'
+              fontSize: 'clamp(0.9rem, 2vw, 1rem)',
+              boxSizing: 'border-box'
             }}
           />
         </div>
@@ -262,7 +267,8 @@ export default function EditFilm() {
               border: '2px solid #8b0000',
               backgroundColor: '#2d2d2d',
               color: '#c0c0c0',
-              fontSize: 'clamp(0.9rem, 2vw, 1rem)'
+              fontSize: 'clamp(0.9rem, 2vw, 1rem)',
+              boxSizing: 'border-box'
             }}
           />
         </div>
@@ -285,7 +291,8 @@ export default function EditFilm() {
               color: '#c0c0c0',
               fontSize: 'clamp(0.85rem, 2vw, 0.95rem)',
               fontFamily: 'inherit',
-              resize: 'vertical'
+              resize: 'vertical',
+              boxSizing: 'border-box'
             }}
           />
         </div>
@@ -307,12 +314,13 @@ export default function EditFilm() {
               border: '2px solid #8b0000',
               backgroundColor: '#2d2d2d',
               color: '#c0c0c0',
-              fontSize: 'clamp(0.9rem, 2vw, 1rem)'
+              fontSize: 'clamp(0.9rem, 2vw, 1rem)',
+              boxSizing: 'border-box'
             }}
           />
         </div>
 
-        {/* NEW: Admin Name */}
+        {/* Admin Name */}
         <div>
           <label style={{ display: 'block', marginBottom: '8px', color: '#a40000', fontWeight: 'bold', fontSize: 'clamp(0.9rem, 2vw, 1rem)' }}>
             Your Name (Admin)
@@ -329,12 +337,13 @@ export default function EditFilm() {
               border: '2px solid #a40000',
               backgroundColor: '#2d2d2d',
               color: '#c0c0c0',
-              fontSize: 'clamp(0.9rem, 2vw, 1rem)'
+              fontSize: 'clamp(0.9rem, 2vw, 1rem)',
+              boxSizing: 'border-box'
             }}
           />
         </div>
 
-        {/* NEW: Admin Review */}
+        {/* Admin Review */}
         <div>
           <label style={{ display: 'block', marginBottom: '8px', color: '#a40000', fontWeight: 'bold', fontSize: 'clamp(0.9rem, 2vw, 1rem)' }}>
             Your Review / Thoughts (Admin)
@@ -354,7 +363,8 @@ export default function EditFilm() {
               fontSize: 'clamp(0.85rem, 2vw, 0.95rem)',
               fontFamily: 'inherit',
               resize: 'vertical',
-              lineHeight: '1.6'
+              lineHeight: '1.6',
+              boxSizing: 'border-box'
             }}
           />
         </div>
@@ -374,12 +384,13 @@ export default function EditFilm() {
         </div>
 
         {/* Buttons */}
-        <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
+        <div style={{ display: 'flex', gap: '12px', marginTop: '8px', flexWrap: 'wrap' }}>
           <button
             type="submit"
             disabled={saving}
             style={{
               flex: 1,
+              minWidth: '150px',
               padding: 'clamp(12px, 2vw, 16px)',
               borderRadius: '6px',
               fontWeight: 'bold',
@@ -418,3 +429,4 @@ export default function EditFilm() {
     </div>
   );
 }
+

@@ -441,11 +441,12 @@ export default function FilmDetailsPage() {
               )}
 
               {/* Grid */}
-              <div style={{ 
+                <div style={{ 
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(clamp(100px, 20vw, 200px), 1fr))',
-                gap: 'clamp(8px, 2vw, 16px)'
+                gridTemplateColumns: 'repeat(auto-fill, minmax(clamp(200px, 30vw, 350px), 1fr))',
+                gap: 'clamp(12px, 3vw, 20px)'
               }}>
+
                 {frames.map((frame) => (
                   <div
                     key={frame.id}
@@ -454,7 +455,7 @@ export default function FilmDetailsPage() {
                       borderRadius: '8px',
                       border: '2px solid #8b0000',
                       overflow: 'hidden',
-                      aspectRatio: '1',
+                      aspectRatio: '16 / 9',
                       backgroundColor: '#000'
                     }}
                   >

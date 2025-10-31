@@ -9,13 +9,14 @@ import {
   limit,
   where,
   Timestamp,
-  updateDoc
+  updateDoc,
+  deleteDoc
 } from 'firebase/firestore';
 import { db } from './firebase';
 import { Film, Frame } from './firestoreSchema';
 
-
 // Upload image to Cloudinary
+// Upload image to Cloudinary with quality optimization
 export const uploadImage = async (
   file: File, 
   folder: string = 'film-lovers'
@@ -40,7 +41,14 @@ export const uploadImage = async (
   }
 
   const data = await response.json();
-  return data.secure_url;
+  
+  // Add quality transformations to the URL
+  const optimizedUrl = data.secure_url.replace(
+    '/upload/',
+    '/upload/q_95,f_auto,dpr_auto,c_fill,g_auto/'
+  );
+  
+  return optimizedUrl;
 };
 
 
@@ -53,7 +61,6 @@ export const addFilm = async (filmData: Omit<Film, 'id'>): Promise<string> => {
   });
   return docRef.id;
 };
-
 
 // Get all films
 export const getAllFilms = async (includeExplicit: boolean = false): Promise<Film[]> => {
@@ -70,7 +77,6 @@ export const getAllFilms = async (includeExplicit: boolean = false): Promise<Fil
   } as Film));
 };
 
-
 // Get single film by ID
 export const getFilmById = async (filmId: string): Promise<Film | null> => {
   const docRef = doc(db, 'films', filmId);
@@ -81,7 +87,6 @@ export const getFilmById = async (filmId: string): Promise<Film | null> => {
   }
   return null;
 };
-
 
 // Add a frame to a film
 export const addFrame = async (frameData: Omit<Frame, 'id'>): Promise<string> => {
@@ -100,7 +105,6 @@ export const addFrame = async (frameData: Omit<Frame, 'id'>): Promise<string> =>
   
   return docRef.id;
 };
-
 
 // Get frames for a specific film
 export const getFramesByFilmId = async (
@@ -126,7 +130,6 @@ export const getFramesByFilmId = async (
   return frames;
 };
 
-
 // Get recent frames (for homepage)
 export const getRecentFrames = async (
   limitCount: number = 12,
@@ -151,8 +154,6 @@ export const getRecentFrames = async (
   return frames;
 };
 
-import { deleteDoc } from 'firebase/firestore';
-
 // Delete a frame
 export const deleteFrame = async (frameId: string, filmId: string): Promise<void> => {
   // Delete frame from collection
@@ -167,3 +168,16 @@ export const deleteFrame = async (frameId: string, filmId: string): Promise<void
   }
 };
 
+// Update film details - FIXED to handle null and empty values
+export const updateFilm = async (
+  filmId: string, 
+  updates: Partial<Omit<Film, 'id'>>
+): Promise<void> => {
+  // Filter out undefined values but keep null and empty strings/arrays
+  const cleanUpdates = Object.fromEntries(
+    Object.entries(updates).filter(([_, value]) => value !== undefined)
+  );
+  
+  const filmRef = doc(db, 'films', filmId);
+  await updateDoc(filmRef, cleanUpdates);
+};

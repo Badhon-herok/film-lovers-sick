@@ -1,3 +1,5 @@
+import { Timestamp } from 'firebase/firestore';
+
 export interface Film {
   id: string;
   name: string;
@@ -5,14 +7,17 @@ export interface Film {
   letterboxdRating: number;
   posterUrl: string;
   frameCount: number;
+  uploadedAt: Timestamp | Date;
   isExplicit: boolean;
-  uploadedAt: Date;
+  
   // Optional fields
+  releaseYear?: number;
   director?: string;
   genre?: string[];
   cast?: string[];
   plot?: string;
-  releaseYear?: number;
+  adminName?: string;
+  adminReview?: string;
 }
 
 export interface Frame {
@@ -20,29 +25,8 @@ export interface Frame {
   filmId: string;
   filmName: string;
   imageUrl: string;
+  uploadedAt: Timestamp | Date;
   isExplicit: boolean;
-  order: number;
-  uploadedAt: Date;
+  order?: number;
 }
 
-export interface Film {
-  id: string;
-  name: string;
-  letterboxdLink: string;
-  letterboxdRating: number;
-  posterUrl: string;
-  frameCount: number;
-  uploadedAt: Date;
-  isExplicit: boolean;
-  
-  // Optional fields
-  releaseYear?: number;
-  director?: string;
-  genre?: string[];
-  cast?: string[];
-  plot?: string;
-  
-  // NEW FIELDS
-  adminName?: string;      // Admin who added the film
-  adminReview?: string;    // Admin's review/thoughts
-}

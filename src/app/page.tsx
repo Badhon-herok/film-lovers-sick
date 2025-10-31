@@ -394,18 +394,19 @@ export default function Home() {
               </p>
             </div>
 
-            <div style={{ 
+             <div style={{ 
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(clamp(100px, 20vw, 200px), 1fr))',
-              gap: 'clamp(8px, 2vw, 16px)'
+              gridTemplateColumns: 'repeat(auto-fill, minmax(clamp(180px, 30vw, 350px), 1fr))',
+              gap: 'clamp(12px, 3vw, 20px)'
             }}>
+
               {recentFrames.map((frame) => (
                 <Link key={frame.id} href={`/films/${frame.filmId}`}>
                   <div 
                     style={{ 
                       position: 'relative',
                       width: '100%',
-                      paddingBottom: '100%',
+                      paddingBottom: '56.25%',
                       borderRadius: '8px',
                       overflow: 'hidden',
                       border: '2px solid #2d2d2d',

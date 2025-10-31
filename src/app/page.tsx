@@ -418,11 +418,14 @@ export default function Home() {
                       src={frame.imageUrl}
                       alt={frame.filmName}
                       fill
-                      sizes="(max-width: 480px) 45vw, (max-width: 768px) 35vw, (max-width: 1024px) 25vw, 20vw"
+                      quality={100}
+                      priority={false}
+                      sizes="(max-width: 480px) 90vw, (max-width: 768px) 80vw, (max-width: 1024px) 60vw, 50vw"
                       style={{
                         objectFit: 'cover'
                       }}
                     />
+
                     {frame.isExplicit && (
                       <span 
                         style={{ 

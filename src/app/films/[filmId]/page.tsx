@@ -459,17 +459,20 @@ export default function FilmDetailsPage() {
                       backgroundColor: '#000'
                     }}
                   >
-                    <Image
+                        <Image
                       src={frame.imageUrl}
                       alt={frame.filmName}
                       fill
-                      sizes="(max-width: 480px) 45vw, (max-width: 768px) 35vw, (max-width: 1024px) 25vw, 20vw"
+                      quality={100}              // ← Make sure it's 100
+                      priority={false}
+                      sizes="(max-width: 480px) 90vw, (max-width: 768px) 80vw, (max-width: 1024px) 60vw, 50vw"
                       style={{
                         objectFit: 'cover',
                         cursor: 'pointer'
                       }}
                       onClick={() => setSelectedFrame(frame)}
                     />
+
                     
                     {frame.isExplicit && (
                       <span 

@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { getFilmById, getFramesByFilmId } from '@/lib/firebaseHelpers';
+import { getFilmById, getFramesByFilmId, deleteFrame } from '@/lib/firebaseHelpers';
+import { useAuth } from '@/hooks/useAuth';
 import { Film, Frame } from '@/lib/firestoreSchema';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -10,12 +11,14 @@ import Link from 'next/link';
 export default function FilmDetailsPage() {
   const { filmId } = useParams();
   const router = useRouter();
+  const { user } = useAuth();
 
   const [film, setFilm] = useState<Film | null>(null);
   const [frames, setFrames] = useState<Frame[]>([]);
   const [explicitMode, setExplicitMode] = useState(false);
   const [loading, setLoading] = useState(true);
   const [selectedFrame, setSelectedFrame] = useState<Frame | null>(null);
+  const [deleting, setDeleting] = useState<string | null>(null);
 
   useEffect(() => {
     const saved = localStorage.getItem('explicitMode');
@@ -53,18 +56,37 @@ export default function FilmDetailsPage() {
     return () => window.removeEventListener('explicitModeChanged', handleExplicitChange);
   }, [filmId, explicitMode, router]);
 
+  const handleDeleteFrame = async (frameId: string) => {
+    if (!confirm('Are you sure you want to delete this frame?')) return;
+
+    setDeleting(frameId);
+    try {
+      await deleteFrame(frameId, filmId as string);
+      setFrames(frames.filter(f => f.id !== frameId));
+      if (film) {
+        setFilm({ ...film, frameCount: Math.max(0, film.frameCount - 1) });
+      }
+      alert('✓ Frame deleted successfully');
+    } catch (error) {
+      console.error('Error deleting frame:', error);
+      alert('Failed to delete frame');
+    } finally {
+      setDeleting(null);
+    }
+  };
+
   if (loading) {
     return (
-      <div style={{ padding: '48px 24px', textAlign: 'center' }}>
-        <p style={{ color: '#c0c0c0' }}>Loading film details...</p>
+      <div style={{ padding: 'clamp(24px, 5vw, 48px)', textAlign: 'center' }}>
+        <p style={{ color: '#c0c0c0', fontSize: 'clamp(14px, 2vw, 16px)' }}>Loading film details...</p>
       </div>
     );
   }
 
   if (!film) {
     return (
-      <div style={{ padding: '48px 24px', textAlign: 'center' }}>
-        <p style={{ color: '#c0c0c0' }}>Film not found</p>
+      <div style={{ padding: 'clamp(24px, 5vw, 48px)', textAlign: 'center' }}>
+        <p style={{ color: '#c0c0c0', fontSize: 'clamp(14px, 2vw, 16px)' }}>Film not found</p>
       </div>
     );
   }
@@ -72,20 +94,23 @@ export default function FilmDetailsPage() {
   return (
     <div style={{ width: '100%' }}>
       {/* Back Link */}
-      <div style={{ padding: '24px 16px', backgroundColor: '#0a0a0a' }}>
-        <div style={{ maxWidth: '1280px', marginLeft: 'auto', marginRight: 'auto' }}>
+      <div style={{ padding: 'clamp(16px, 3vw, 24px)', backgroundColor: '#0a0a0a' }}>
+        <div style={{ maxWidth: '1280px', marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 2vw, 24px)', paddingRight: 'clamp(16px, 2vw, 24px)' }}>
           <Link 
             href="/films"
             style={{
               display: 'inline-block',
-              padding: '8px 16px',
+              padding: 'clamp(6px, 1.2vw, 8px) clamp(12px, 2vw, 16px)',
               borderRadius: '6px',
               border: '2px solid #8b0000',
               color: '#c0c0c0',
               textDecoration: 'none',
-              fontSize: '14px',
-              fontWeight: 'bold'
+              fontSize: 'clamp(12px, 2vw, 14px)',
+              fontWeight: 'bold',
+              transition: 'all 0.3s'
             }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#8b0000'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
           >
             ← Back to Films
           </Link>
@@ -93,18 +118,24 @@ export default function FilmDetailsPage() {
       </div>
 
       {/* Film Header */}
-      <section style={{ padding: '32px 16px', backgroundColor: '#1a1a1a' }}>
-        <div style={{ maxWidth: '1280px', marginLeft: 'auto', marginRight: 'auto' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '32px', alignItems: 'start' }}>
+      <section style={{ padding: 'clamp(20px, 4vw, 32px)', backgroundColor: '#1a1a1a' }}>
+        <div style={{ maxWidth: '1280px', marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 2vw, 24px)', paddingRight: 'clamp(16px, 2vw, 24px)' }}>
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'minmax(120px, 200px) 1fr',
+            gap: 'clamp(16px, 5vw, 32px)',
+            alignItems: 'start'
+          }}>
             {/* Poster */}
-            <div>
+            <div style={{ width: '100%' }}>
               <Image
                 src={film.posterUrl}
                 alt={film.name}
-                width={300}
-                height={450}
+                width={200}
+                height={300}
                 style={{
                   width: '100%',
+                  height: 'auto',
                   borderRadius: '8px',
                   border: '2px solid #8b0000',
                   objectFit: 'cover'
@@ -118,49 +149,46 @@ export default function FilmDetailsPage() {
                 style={{ 
                   fontFamily: 'var(--font-creepster)',
                   color: '#a40000',
-                  fontSize: '3rem',
-                  marginBottom: '16px'
+                  fontSize: 'clamp(1.5rem, 5vw, 3rem)',
+                  marginBottom: '12px',
+                  lineHeight: '1.2'
                 }}
               >
                 {film.name}
               </h1>
 
-              {/* Release Year */}
               {film.releaseYear && (
-                <p style={{ color: '#c0c0c0', fontSize: '1rem', marginBottom: '12px' }}>
+                <p style={{ color: '#c0c0c0', fontSize: 'clamp(0.85rem, 2vw, 1rem)', marginBottom: '8px' }}>
                   <strong style={{ color: '#a40000' }}>Released:</strong> {film.releaseYear}
                 </p>
               )}
 
-              {/* Rating */}
-              <p style={{ color: '#a40000', fontSize: '1.2rem', marginBottom: '16px' }}>
+              <p style={{ color: '#a40000', fontSize: 'clamp(1rem, 3vw, 1.2rem)', marginBottom: '12px', fontWeight: 'bold' }}>
                 ⭐ {film.letterboxdRating} / 5
               </p>
 
-              {/* Director */}
               {film.director && (
-                <p style={{ color: '#c0c0c0', fontSize: '0.95rem', marginBottom: '12px' }}>
+                <p style={{ color: '#c0c0c0', fontSize: 'clamp(0.8rem, 2vw, 0.95rem)', marginBottom: '8px' }}>
                   <strong style={{ color: '#a40000' }}>Director:</strong> {film.director}
                 </p>
               )}
 
-              {/* Genre */}
               {film.genre && film.genre.length > 0 && (
-                <div style={{ marginBottom: '16px' }}>
-                  <p style={{ color: '#a40000', fontSize: '0.9rem', marginBottom: '6px' }}>
+                <div style={{ marginBottom: '12px' }}>
+                  <p style={{ color: '#a40000', fontSize: 'clamp(0.8rem, 2vw, 0.9rem)', marginBottom: '4px' }}>
                     <strong>Genres:</strong>
                   </p>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                     {film.genre.map((g, idx) => (
                       <span
                         key={idx}
                         style={{
                           display: 'inline-block',
-                          padding: '4px 12px',
+                          padding: '2px 8px',
                           backgroundColor: '#8b0000',
                           color: '#c0c0c0',
                           borderRadius: '20px',
-                          fontSize: '0.85rem'
+                          fontSize: 'clamp(0.7rem, 1.5vw, 0.85rem)'
                         }}
                       >
                         {g}
@@ -170,59 +198,55 @@ export default function FilmDetailsPage() {
                 </div>
               )}
 
-              {/* Cast */}
               {film.cast && film.cast.length > 0 && (
-                <p style={{ color: '#c0c0c0', fontSize: '0.95rem', marginBottom: '12px' }}>
+                <p style={{ color: '#c0c0c0', fontSize: 'clamp(0.8rem, 2vw, 0.95rem)', marginBottom: '8px' }}>
                   <strong style={{ color: '#a40000' }}>Cast:</strong> {film.cast.join(', ')}
                 </p>
               )}
 
-              {/* Plot */}
               {film.plot && (
-                <p style={{ color: '#c0c0c0', fontSize: '0.9rem', lineHeight: '1.6', marginBottom: '16px' }}>
+                <p style={{ color: '#c0c0c0', fontSize: 'clamp(0.8rem, 2vw, 0.9rem)', lineHeight: '1.6', marginBottom: '12px' }}>
                   {film.plot}
                 </p>
               )}
 
-              {/* Frames Count */}
-              <p style={{ color: '#c0c0c0', marginBottom: '8px' }}>
-                <strong style={{ color: '#a40000' }}>Frames in Collection:</strong>
-              </p>
-              <p style={{ color: '#c0c0c0', fontSize: '1.1rem', marginBottom: '16px' }}>
-                {film.frameCount} frame{film.frameCount !== 1 ? 's' : ''}
+              <p style={{ color: '#c0c0c0', fontSize: 'clamp(0.85rem, 2vw, 1rem)', marginBottom: '4px' }}>
+                <strong style={{ color: '#a40000' }}>Frames:</strong> {film.frameCount}
               </p>
 
-              {/* Explicit Warning */}
               {film.isExplicit && (
                 <div
                   style={{
-                    padding: '12px',
+                    padding: 'clamp(8px, 1.5vw, 12px)',
                     borderRadius: '6px',
                     border: '2px solid #a40000',
                     backgroundColor: 'rgba(164, 0, 0, 0.2)',
                     color: '#a40000',
-                    marginBottom: '16px'
+                    marginBottom: '12px',
+                    fontSize: 'clamp(0.8rem, 2vw, 0.9rem)'
                   }}
                 >
-                  <strong>⚠️ This film contains explicit content</strong>
+                  <strong>⚠️ Explicit Content</strong>
                 </div>
               )}
 
-              {/* Letterboxd Link */}
               <a
                 href={film.letterboxdLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
                   display: 'inline-block',
-                  padding: '10px 24px',
+                  padding: 'clamp(6px, 1.5vw, 10px) clamp(12px, 2vw, 24px)',
                   borderRadius: '6px',
                   border: '2px solid #8b0000',
                   color: '#c0c0c0',
                   textDecoration: 'none',
                   fontWeight: 'bold',
+                  fontSize: 'clamp(0.85rem, 2vw, 1rem)',
                   transition: 'all 0.3s'
                 }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#8b0000'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
               >
                 View on Letterboxd →
               </a>
@@ -232,14 +256,14 @@ export default function FilmDetailsPage() {
       </section>
 
       {/* Frames Section */}
-      <section style={{ padding: '32px 16px', backgroundColor: '#0a0a0a' }}>
-        <div style={{ maxWidth: '1280px', marginLeft: 'auto', marginRight: 'auto' }}>
+      <section style={{ padding: 'clamp(20px, 4vw, 32px)', backgroundColor: '#0a0a0a' }}>
+        <div style={{ maxWidth: '1280px', marginLeft: 'auto', marginRight: 'auto', paddingLeft: 'clamp(16px, 2vw, 24px)', paddingRight: 'clamp(16px, 2vw, 24px)' }}>
           <h2 
             style={{ 
               fontFamily: 'var(--font-creepster)',
               color: '#a40000',
-              fontSize: '2.5rem',
-              marginBottom: '24px',
+              fontSize: 'clamp(1.5rem, 5vw, 2.5rem)',
+              marginBottom: '20px',
               textAlign: 'center'
             }}
           >
@@ -249,19 +273,19 @@ export default function FilmDetailsPage() {
           {frames.length === 0 ? (
             <div 
               style={{
-                padding: '32px',
+                padding: 'clamp(20px, 5vw, 32px)',
                 borderRadius: '8px',
                 textAlign: 'center',
                 backgroundColor: '#1a1a1a'
               }}
             >
-              <p style={{ color: '#c0c0c0' }}>
+              <p style={{ color: '#c0c0c0', fontSize: 'clamp(0.9rem, 2vw, 1rem)' }}>
                 No frames available for this film yet.
               </p>
             </div>
           ) : (
             <>
-              {/* Lightbox - Selected Frame */}
+              {/* Lightbox */}
               {selectedFrame && (
                 <div
                   style={{
@@ -271,7 +295,7 @@ export default function FilmDetailsPage() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    padding: '16px',
+                    padding: 'clamp(12px, 2vw, 16px)',
                     backgroundColor: 'rgba(0, 0, 0, 0.95)'
                   }}
                   onClick={() => setSelectedFrame(null)}
@@ -279,8 +303,9 @@ export default function FilmDetailsPage() {
                   <div 
                     style={{
                       position: 'relative',
-                      maxWidth: '90vw',
-                      maxHeight: '90vh'
+                      maxWidth: '95vw',
+                      maxHeight: '90vh',
+                      width: '100%'
                     }}
                     onClick={(e) => e.stopPropagation()}
                   >
@@ -288,9 +313,9 @@ export default function FilmDetailsPage() {
                       onClick={() => setSelectedFrame(null)}
                       style={{
                         position: 'absolute',
-                        top: '16px',
-                        right: '16px',
-                        fontSize: '32px',
+                        top: '8px',
+                        right: '8px',
+                        fontSize: 'clamp(20px, 5vw, 32px)',
                         background: 'none',
                         border: 'none',
                         color: '#a40000',
@@ -314,8 +339,9 @@ export default function FilmDetailsPage() {
                     <p 
                       style={{
                         textAlign: 'center',
-                        marginTop: '16px',
-                        color: '#c0c0c0'
+                        marginTop: 'clamp(12px, 2vw, 16px)',
+                        color: '#c0c0c0',
+                        fontSize: 'clamp(0.85rem, 2vw, 1rem)'
                       }}
                     >
                       {selectedFrame.filmName}
@@ -324,11 +350,11 @@ export default function FilmDetailsPage() {
                 </div>
               )}
 
-              {/* Grid of Frames */}
+              {/* Grid */}
               <div style={{ 
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-                gap: '16px'
+                gridTemplateColumns: 'repeat(auto-fill, minmax(clamp(100px, 20vw, 200px), 1fr))',
+                gap: 'clamp(8px, 2vw, 16px)'
               }}>
                 {frames.map((frame) => (
                   <div
@@ -338,37 +364,72 @@ export default function FilmDetailsPage() {
                       borderRadius: '8px',
                       border: '2px solid #8b0000',
                       overflow: 'hidden',
-                      cursor: 'pointer',
                       aspectRatio: '1',
                       backgroundColor: '#000'
                     }}
-                    onClick={() => setSelectedFrame(frame)}
                   >
                     <Image
                       src={frame.imageUrl}
                       alt={frame.filmName}
                       fill
-                      sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                      sizes="(max-width: 480px) 45vw, (max-width: 768px) 35vw, (max-width: 1024px) 25vw, 20vw"
                       style={{
-                        objectFit: 'cover'
+                        objectFit: 'cover',
+                        cursor: 'pointer'
                       }}
+                      onClick={() => setSelectedFrame(frame)}
                     />
+                    
                     {frame.isExplicit && (
                       <span 
                         style={{
                           position: 'absolute',
-                          top: '8px',
-                          right: '8px',
-                          padding: '4px 8px',
+                          top: '6px',
+                          right: '6px',
+                          padding: '2px 6px',
                           backgroundColor: '#a40000',
                           color: 'white',
-                          fontSize: '12px',
+                          fontSize: 'clamp(9px, 2vw, 12px)',
                           fontWeight: 'bold',
                           borderRadius: '4px'
                         }}
                       >
                         EXPLICIT
                       </span>
+                    )}
+
+                    {/* Delete Button - Admin Only */}
+                    {user && (
+                      <button
+                        onClick={() => handleDeleteFrame(frame.id)}
+                        disabled={deleting === frame.id}
+                        style={{
+                          position: 'absolute',
+                          bottom: '6px',
+                          right: '6px',
+                          padding: 'clamp(3px, 0.8vw, 4px) clamp(6px, 1vw, 8px)',
+                          backgroundColor: '#a40000',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: deleting === frame.id ? 'not-allowed' : 'pointer',
+                          fontSize: 'clamp(8px, 1.8vw, 11px)',
+                          fontWeight: 'bold',
+                          opacity: deleting === frame.id ? 0.6 : 1,
+                          transition: 'all 0.3s'
+                        }}
+                        onMouseEnter={(e) => {
+                          if (deleting !== frame.id) {
+                            e.currentTarget.style.backgroundColor = '#ff0000';
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = '#a40000';
+                        }}
+                        title="Delete this frame (Admin only)"
+                      >
+                        {deleting === frame.id ? '...' : '🗑️'}
+                      </button>
                     )}
                   </div>
                 ))}

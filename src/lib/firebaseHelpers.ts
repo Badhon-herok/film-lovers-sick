@@ -150,3 +150,20 @@ export const getRecentFrames = async (
   
   return frames;
 };
+
+import { deleteDoc } from 'firebase/firestore';
+
+// Delete a frame
+export const deleteFrame = async (frameId: string, filmId: string): Promise<void> => {
+  // Delete frame from collection
+  await deleteDoc(doc(db, 'frames', frameId));
+  
+  // Update film's frame count
+  const filmRef = doc(db, 'films', filmId);
+  const filmDoc = await getDoc(filmRef);
+  if (filmDoc.exists()) {
+    const currentCount = filmDoc.data().frameCount || 0;
+    await updateDoc(filmRef, { frameCount: Math.max(0, currentCount - 1) });
+  }
+};
+

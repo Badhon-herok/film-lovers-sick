@@ -56,6 +56,17 @@ export default function FilmDetailsPage() {
     return () => window.removeEventListener('explicitModeChanged', handleExplicitChange);
   }, [filmId, explicitMode, router]);
 
+  // Close lightbox on ESC key
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && selectedFrame) {
+        setSelectedFrame(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [selectedFrame]);
+
   const handleDeleteFrame = async (frameId: string) => {
     if (!confirm('Are you sure you want to delete this frame?')) return;
 
@@ -296,19 +307,26 @@ export default function FilmDetailsPage() {
                     alignItems: 'center',
                     justifyContent: 'center',
                     padding: 'clamp(12px, 2vw, 16px)',
-                    backgroundColor: 'rgba(0, 0, 0, 0.95)'
+                    backgroundColor: 'rgba(0, 0, 0, 0.95)',
+                    backdropFilter: 'blur(4px)'
                   }}
                   onClick={() => setSelectedFrame(null)}
                 >
                   <div 
                     style={{
                       position: 'relative',
-                      maxWidth: '95vw',
-                      maxHeight: '90vh',
-                      width: '100%'
+                      maxWidth: '80vw',
+                      maxHeight: '80vh',
+                      width: 'auto',
+                      backgroundColor: '#1a1a1a',
+                      borderRadius: '12px',
+                      border: '2px solid #a40000',
+                      padding: 'clamp(12px, 2vw, 20px)',
+                      boxShadow: '0 0 40px rgba(164, 0, 0, 0.5)'
                     }}
                     onClick={(e) => e.stopPropagation()}
                   >
+                    {/* Close Button */}
                     <button
                       onClick={() => setSelectedFrame(null)}
                       style={{
@@ -320,31 +338,76 @@ export default function FilmDetailsPage() {
                         border: 'none',
                         color: '#a40000',
                         cursor: 'pointer',
-                        zIndex: 10
+                        zIndex: 10,
+                        width: '40px',
+                        height: '40px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: '50%',
+                        transition: 'all 0.3s'
                       }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = 'rgba(164, 0, 0, 0.2)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                      }}
+                      title="Close (ESC)"
                     >
                       ✕
                     </button>
-                    <Image
-                      src={selectedFrame.imageUrl}
-                      alt={selectedFrame.filmName}
-                      width={1200}
-                      height={800}
-                      style={{
-                        width: '100%',
-                        height: 'auto',
-                        borderRadius: '8px'
-                      }}
-                    />
+
+                    {/* Image Container */}
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      maxWidth: '100%',
+                      maxHeight: '100%'
+                    }}>
+                      <Image
+                        src={selectedFrame.imageUrl}
+                        alt={selectedFrame.filmName}
+                        width={1200}
+                        height={800}
+                        style={{
+                          width: 'auto',
+                          height: 'auto',
+                          maxWidth: '100%',
+                          maxHeight: '70vh',
+                          borderRadius: '8px',
+                          objectFit: 'contain'
+                        }}
+                      />
+                    </div>
+
+                    {/* Film Name */}
                     <p 
                       style={{
                         textAlign: 'center',
                         marginTop: 'clamp(12px, 2vw, 16px)',
                         color: '#c0c0c0',
-                        fontSize: 'clamp(0.85rem, 2vw, 1rem)'
+                        fontSize: 'clamp(0.85rem, 2vw, 1rem)',
+                        margin: 0,
+                        paddingTop: '12px',
+                        borderTop: '1px solid #8b0000'
                       }}
                     >
                       {selectedFrame.filmName}
+                    </p>
+
+                    {/* Keyboard Hint */}
+                    <p 
+                      style={{
+                        textAlign: 'center',
+                        marginTop: '8px',
+                        color: 'rgba(192, 192, 192, 0.5)',
+                        fontSize: 'clamp(0.7rem, 1.5vw, 0.8rem)',
+                        margin: 0
+                      }}
+                    >
+                      Click ✕ or press ESC to close
                     </p>
                   </div>
                 </div>

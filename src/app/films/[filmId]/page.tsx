@@ -261,6 +261,33 @@ export default function FilmDetailsPage() {
               >
                 View on Letterboxd →
               </a>
+
+              {/* Admin Review Section - NEW */}
+              {(film.adminName || film.adminReview) && (
+                <div
+                  style={{
+                    marginTop: '20px',
+                    padding: 'clamp(12px, 2vw, 16px)',
+                    borderRadius: '8px',
+                    border: '2px solid #8b0000',
+                    backgroundColor: 'rgba(139, 0, 0, 0.1)'
+                  }}
+                >
+                  <p style={{ color: '#a40000', fontSize: 'clamp(0.85rem, 2vw, 0.95rem)', marginBottom: '8px', fontWeight: 'bold', margin: 0 }}>
+                    🎬 Admin's Thoughts
+                  </p>
+                  {film.adminName && (
+                    <p style={{ color: '#c0c0c0', fontSize: 'clamp(0.8rem, 2vw, 0.9rem)', marginBottom: '8px', margin: 0 }}>
+                      <strong>By:</strong> {film.adminName}
+                    </p>
+                  )}
+                  {film.adminReview && (
+                    <p style={{ color: '#c0c0c0', fontSize: 'clamp(0.85rem, 2vw, 0.95rem)', lineHeight: '1.6', fontStyle: 'italic', margin: 0 }}>
+                      "{film.adminReview}"
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>

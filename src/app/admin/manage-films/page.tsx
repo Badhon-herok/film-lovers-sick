@@ -204,9 +204,10 @@ export default function ManageFilms() {
                   </span>
                 )}
 
-                {/* Buttons */}
+                {/* Buttons - NOW WITH 3 BUTTONS */}
                 <div style={{
-                  display: 'flex',
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
                   gap: '8px',
                   marginTop: 'auto'
                 }}>
@@ -214,7 +215,6 @@ export default function ManageFilms() {
                   <Link
                     href={`/admin/upload-frames/${film.id}`}
                     style={{
-                      flex: 1,
                       padding: 'clamp(6px, 1.2vw, 8px) clamp(8px, 1.5vw, 12px)',
                       backgroundColor: '#a40000',
                       color: 'white',
@@ -240,11 +240,40 @@ export default function ManageFilms() {
                     📤 Upload
                   </Link>
 
-                  {/* View Frames Button */}
+                  {/* Edit Button - NEW */}
+                  <Link
+                    href={`/admin/edit-film/${film.id}`}
+                    style={{
+                      padding: 'clamp(6px, 1.2vw, 8px) clamp(8px, 1.5vw, 12px)',
+                      backgroundColor: 'transparent',
+                      color: '#c0c0c0',
+                      border: '2px solid #a40000',
+                      borderRadius: '4px',
+                      textDecoration: 'none',
+                      fontWeight: 'bold',
+                      fontSize: 'clamp(0.75rem, 1.6vw, 0.85rem)',
+                      textAlign: 'center',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s',
+                      display: 'block'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#a40000';
+                      e.currentTarget.style.color = 'white';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                      e.currentTarget.style.color = '#c0c0c0';
+                    }}
+                  >
+                    ✏️ Edit
+                  </Link>
+
+                  {/* View Frames Button - Spans 2 columns */}
                   <Link
                     href={`/films/${film.id}`}
                     style={{
-                      flex: 1,
+                      gridColumn: '1 / -1',
                       padding: 'clamp(6px, 1.2vw, 8px) clamp(8px, 1.5vw, 12px)',
                       backgroundColor: 'transparent',
                       color: '#c0c0c0',

@@ -15,6 +15,7 @@ export default function FilmDetailsPage() {
 
   const [film, setFilm] = useState<Film | null>(null);
   const [frames, setFrames] = useState<Frame[]>([]);
+  const [failedFrames, setFailedFrames] = useState<Record<string, boolean>>({});
   const [explicitMode, setExplicitMode] = useState(false);
   const [loading, setLoading] = useState(true);
   const [selectedFrame, setSelectedFrame] = useState<Frame | null>(null);
@@ -422,20 +423,37 @@ export default function FilmDetailsPage() {
                       maxWidth: '100%',
                       maxHeight: '100%'
                     }}>
-                      <Image
-                        src={selectedFrame.imageUrl}
-                        alt={selectedFrame.filmName}
-                        width={1200}
-                        height={800}
-                        style={{
-                          width: 'auto',
-                          height: 'auto',
-                          maxWidth: '100%',
-                          maxHeight: '70vh',
-                          borderRadius: '8px',
-                          objectFit: 'contain'
-                        }}
-                      />
+                      {failedFrames[selectedFrame.id] || !selectedFrame.imageUrl ? (
+                        <div style={{
+                          width: '80vw',
+                          height: '60vh',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: '#c0c0c0',
+                          backgroundColor: '#111',
+                          borderRadius: '8px'
+                        }}>
+                          <span style={{ textAlign: 'center', padding: '12px' }}>No image (deleted)</span>
+                        </div>
+                      ) : (
+                        // use plain img so we can detect load errors reliably in browser
+                        <img
+                          src={selectedFrame.imageUrl}
+                          alt={selectedFrame.filmName}
+                          width={1200}
+                          height={800}
+                          style={{
+                            width: 'auto',
+                            height: 'auto',
+                            maxWidth: '100%',
+                            maxHeight: '70vh',
+                            borderRadius: '8px',
+                            objectFit: 'contain'
+                          }}
+                          onError={() => setFailedFrames(prev => ({ ...prev, [selectedFrame.id]: true }))}
+                        />
+                      )}
                     </div>
 
                     {/* Film Name */}
@@ -491,19 +509,18 @@ export default function FilmDetailsPage() {
                       justifyContent: 'center'
                     }}
                   >
-                    {frame.imageUrl ? (
-                      <Image
+                    {(frame.imageUrl && !failedFrames[frame.id]) ? (
+                      <img
                         src={frame.imageUrl}
                         alt={frame.filmName}
-                        fill
-                        quality={100}
-                        priority={false}
-                        sizes="(max-width: 480px) 90vw, (max-width: 768px) 80vw, (max-width: 1024px) 60vw, 50vw"
                         style={{
+                          width: '100%',
+                          height: '100%',
                           objectFit: 'cover',
                           cursor: 'pointer'
                         }}
                         onClick={() => setSelectedFrame(frame)}
+                        onError={() => setFailedFrames(prev => ({ ...prev, [frame.id]: true }))}
                       />
                     ) : (
                       <div style={{

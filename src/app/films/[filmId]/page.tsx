@@ -241,8 +241,17 @@ export default function FilmDetailsPage() {
                 </p>
               )}
 
+              {/* Show counts: visitors see visible frames; admins see total and visible for management */}
               <p style={{ color: '#c0c0c0', fontSize: 'clamp(0.85rem, 2vw, 1rem)', marginBottom: '4px' }}>
-                <strong style={{ color: '#a40000' }}>Frames:</strong> {film.frameCount}
+                <strong style={{ color: '#a40000' }}>Frames:</strong>{' '}
+                {user ? (
+                  <>
+                    {film.frameCount} total
+                    <span style={{ color: 'rgba(192,192,192,0.7)' }}> ({frames.length} visible)</span>
+                  </>
+                ) : (
+                  <>{frames.length}</>
+                )}
               </p>
 
               {film.isExplicit && (

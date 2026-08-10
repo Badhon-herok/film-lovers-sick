@@ -145,22 +145,16 @@ export default function FilmsPage() {
               </p>
             </div>
           ) : (
-                        <p style={{ color: '#c0c0c0', fontSize: 'clamp(0.75rem, 1.8vw, 0.9rem)', marginBottom: '8px' }}>
-                          {user ? (
-                            <>
-                              {film.frameCount} total
-                              <span style={{ color: 'rgba(192,192,192,0.7)' }}> ({(film as any).visibleCount ?? 0} visible)</span>
-                            </>
-                          ) : (
-                            <>{(film as any).visibleCount ?? film.frameCount} frame{((film as any).visibleCount ?? film.frameCount) !== 1 ? 's' : ''}</>
-                          )}
-                        </p>
+            <>
+              {/* Film Count */}
+              <div
+                style={{
                   marginBottom: 'clamp(16px, 3vw, 24px)',
                   textAlign: 'center'
                 }}
               >
-                <p 
-                  style={{ 
+                <p
+                  style={{
                     color: '#a40000',
                     fontSize: 'clamp(0.9rem, 2vw, 1.1rem)',
                     fontWeight: 'bold'
@@ -171,8 +165,8 @@ export default function FilmsPage() {
               </div>
 
               {/* Grid */}
-              <div 
-                style={{ 
+              <div
+                style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(auto-fill, minmax(clamp(130px, 22vw, 220px), 1fr))',
                   gap: 'clamp(12px, 2.5vw, 20px)'
@@ -245,7 +239,14 @@ export default function FilmsPage() {
                         
                         {/* Frames Count */}
                         <p style={{ color: '#c0c0c0', fontSize: 'clamp(0.75rem, 1.8vw, 0.9rem)', marginBottom: '8px' }}>
-                          {film.frameCount} frame{film.frameCount !== 1 ? 's' : ''}
+                          {user ? (
+                            <>
+                              {film.frameCount} total
+                              <span style={{ color: 'rgba(192,192,192,0.7)' }}> ({(film as any).visibleCount ?? 0} visible)</span>
+                            </>
+                          ) : (
+                            <>{(film as any).visibleCount ?? film.frameCount} frame{((film as any).visibleCount ?? film.frameCount) !== 1 ? 's' : ''}</>
+                          )}
                         </p>
                         
                         {/* Explicit Badge */}

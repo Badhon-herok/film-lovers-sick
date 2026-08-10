@@ -54,7 +54,12 @@ export default function FilmDetailsPage() {
             })
           );
 
-          setFrames(validated.filter(Boolean) as Frame[]);
+          // If the current user is an admin (signed in), show all frames so they can manage/delete
+          if (user) {
+            setFrames(framesData);
+          } else {
+            setFrames(validated.filter(Boolean) as Frame[]);
+          }
         } catch (error) {
           console.error('Error fetching film:', error);
           router.push('/films');
@@ -462,9 +467,7 @@ export default function FilmDetailsPage() {
                 gap: 'clamp(12px, 3vw, 20px)'
               }}>
 
-                {frames.map((frame) => {
-                  if (!frame.imageUrl) return null;
-                  return (
+                {frames.map((frame) => (
                   <div
                     key={frame.id}
                     style={{
@@ -473,24 +476,40 @@ export default function FilmDetailsPage() {
                       border: '2px solid #8b0000',
                       overflow: 'hidden',
                       aspectRatio: '16 / 9',
-                      backgroundColor: '#000'
+                      backgroundColor: '#000',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
                     }}
                   >
-                          <Image
-                            src={frame.imageUrl}
-                            alt={frame.filmName}
-                            fill
-                            quality={100}
-                            priority={false}
-                            sizes="(max-width: 480px) 90vw, (max-width: 768px) 80vw, (max-width: 1024px) 60vw, 50vw"
-                            style={{
-                              objectFit: 'cover',
-                              cursor: 'pointer'
-                            }}
-                            onClick={() => setSelectedFrame(frame)}
-                          />
+                    {frame.imageUrl ? (
+                      <Image
+                        src={frame.imageUrl}
+                        alt={frame.filmName}
+                        fill
+                        quality={100}
+                        priority={false}
+                        sizes="(max-width: 480px) 90vw, (max-width: 768px) 80vw, (max-width: 1024px) 60vw, 50vw"
+                        style={{
+                          objectFit: 'cover',
+                          cursor: 'pointer'
+                        }}
+                        onClick={() => setSelectedFrame(frame)}
+                      />
+                    ) : (
+                      <div style={{
+                        width: '100%',
+                        height: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#c0c0c0',
+                        backgroundColor: '#111'
+                      }}>
+                        <span style={{ textAlign: 'center', padding: '12px' }}>No image (deleted)</span>
+                      </div>
+                    )}
 
-                    
                     {frame.isExplicit && (
                       <span 
                         style={{
@@ -543,8 +562,7 @@ export default function FilmDetailsPage() {
                       </button>
                     )}
                   </div>
-                  );
-                })}
+                ))}
               </div>
             </>
           )}

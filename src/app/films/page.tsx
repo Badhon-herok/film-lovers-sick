@@ -24,7 +24,20 @@ export default function FilmsPage() {
     const fetchFilms = async () => {
       try {
         const allFilms = await getAllFilms(explicitMode);
-        setFilms(allFilms);
+        // compute visible frame counts by fetching all frames once
+        const allFrames = await (await import('@/lib/firebaseHelpers')).getAllFrames(explicitMode);
+        const counts = allFilms.map(f => ({
+          id: f.id,
+          visible: allFrames.filter(fr => fr.filmId === f.id && fr.imageUrl).length
+        }));
+
+        // attach visibleCount to each film for UI
+        const filmsWithCounts = allFilms.map(f => ({
+          ...f,
+          visibleCount: counts.find(c => c.id === f.id)?.visible ?? 0
+        } as any));
+
+        setFilms(filmsWithCounts as unknown as Film[]);
       } catch (error) {
         console.error('Error fetching films:', error);
       } finally {

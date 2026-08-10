@@ -186,7 +186,8 @@ export default function ManageFilms() {
                   fontSize: 'clamp(0.8rem, 1.8vw, 0.9rem)',
                   margin: '4px 0 12px 0'
                 }}>
-                  {film.frameCount} frame{film.frameCount !== 1 ? 's' : ''}
+                  {film.frameCount} total
+                  <span style={{ color: 'rgba(192,192,192,0.7)' }}> ({(film as any).visibleCount ?? '—'} visible)</span>
                 </p>
 
                 {film.isExplicit && (

@@ -151,6 +151,21 @@ export const getRecentFrames = async (
   return frames;
 };
 
+// Get all frames (useful for computing counts on index pages)
+export const getAllFrames = async (includeExplicit: boolean = false): Promise<Frame[]> => {
+  const querySnapshot = await getDocs(collection(db, 'frames'));
+  let frames = querySnapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data()
+  } as Frame));
+
+  if (!includeExplicit) {
+    frames = frames.filter(frame => !frame.isExplicit);
+  }
+
+  return frames;
+};
+
 // Delete a frame
 export const deleteFrame = async (frameId: string, filmId: string): Promise<void> => {
   // Delete frame from collection

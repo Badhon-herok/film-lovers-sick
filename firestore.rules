@@ -1,0 +1,21 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow public reads for films and frames so the public site can display content.
+    match /films/{filmId} {
+      allow get, list: if true;
+      // Restrict writes to authenticated users with an `admin` custom claim.
+      allow create, update, delete: if request.auth != null && request.auth.token.admin == true;
+    }
+
+    match /frames/{frameId} {
+      allow get, list: if true;
+      allow create, update, delete: if request.auth != null && request.auth.token.admin == true;
+    }
+
+    // Deny access to all other documents by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

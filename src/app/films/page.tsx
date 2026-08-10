@@ -1,7 +1,6 @@
  'use client';
 
 import { useState, useEffect } from 'react';
-import { useAuth } from '@/hooks/useAuth';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getAllFilms } from '@/lib/firebaseHelpers';
@@ -61,7 +60,7 @@ export default function FilmsPage() {
     );
   }
 
-  const { user } = useAuth();
+  
 
   return (
     <div style={{ width: '100%' }}>
@@ -237,17 +236,7 @@ export default function FilmsPage() {
                           ⭐ {film.letterboxdRating}/5
                         </p>
                         
-                        {/* Frames Count */}
-                        <p style={{ color: '#c0c0c0', fontSize: 'clamp(0.75rem, 1.8vw, 0.9rem)', marginBottom: '8px' }}>
-                          {user ? (
-                            <>
-                              {film.frameCount} total
-                              <span style={{ color: 'rgba(192,192,192,0.7)' }}> ({(film as any).visibleCount ?? 0} visible)</span>
-                            </>
-                          ) : (
-                            <>{(film as any).visibleCount ?? film.frameCount} frame{((film as any).visibleCount ?? film.frameCount) !== 1 ? 's' : ''}</>
-                          )}
-                        </p>
+                        {/* Frames Count removed per request */}
                         
                         {/* Explicit Badge */}
                         {film.isExplicit && (

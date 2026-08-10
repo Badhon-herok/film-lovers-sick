@@ -25,8 +25,21 @@ export default function Home() {
     const fetchData = async () => {
       try {
         const frames = await getRecentFrames(8, explicitMode);
+        // Validate frame image URLs to avoid showing deleted images
+        const validated = await Promise.all(
+          frames.map(async (f) => {
+            if (!f.imageUrl) return null;
+            try {
+              const res = await fetch(f.imageUrl, { method: 'HEAD' });
+              return res.ok ? f : null;
+            } catch (err) {
+              return null;
+            }
+          })
+        );
+
         const films = await getAllFilms(explicitMode);
-        setRecentFrames(frames);
+        setRecentFrames((validated.filter(Boolean) as Frame[]).slice(0, 8));
         setRecentFilms(films.slice(0, 6));
       } catch (error) {
         console.error('Error fetching data:', error);

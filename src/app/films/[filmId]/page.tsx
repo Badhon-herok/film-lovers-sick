@@ -41,7 +41,20 @@ export default function FilmDetailsPage() {
           setFilm(filmData);
 
           const framesData = await getFramesByFilmId(filmId, explicitMode);
-          setFrames(framesData);
+          // Validate image URLs (filter out deleted/404 images)
+          const validated = await Promise.all(
+            framesData.map(async (f) => {
+              if (!f.imageUrl) return null;
+              try {
+                const res = await fetch(f.imageUrl, { method: 'HEAD' });
+                return res.ok ? f : null;
+              } catch (err) {
+                return null;
+              }
+            })
+          );
+
+          setFrames(validated.filter(Boolean) as Frame[]);
         } catch (error) {
           console.error('Error fetching film:', error);
           router.push('/films');

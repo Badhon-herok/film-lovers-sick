@@ -140,16 +140,18 @@ export default function ManageFilms() {
                 e.currentTarget.style.transform = 'scale(1)';
               }}
             >
-              {/* Poster Image */}
-              <div style={{ position: 'relative', paddingBottom: '150%', overflow: 'hidden' }}>
-                <Image
-                  src={film.posterUrl}
-                  alt={film.name}
-                  fill
-                  sizes="(max-width: 480px) 45vw, (max-width: 768px) 35vw, (max-width: 1024px) 28vw, 22vw"
-                  style={{ objectFit: 'cover' }}
-                />
-              </div>
+              {/* Poster Image (only render if URL exists) */}
+              {film.posterUrl ? (
+                <div style={{ position: 'relative', paddingBottom: '150%', overflow: 'hidden' }}>
+                  <Image
+                    src={film.posterUrl}
+                    alt={film.name}
+                    fill
+                    sizes="(max-width: 480px) 45vw, (max-width: 768px) 35vw, (max-width: 1024px) 28vw, 22vw"
+                    style={{ objectFit: 'cover' }}
+                  />
+                </div>
+              ) : null}
 
               {/* Film Info */}
               <div style={{ padding: 'clamp(12px, 2vw, 16px)', flex: 1, display: 'flex', flexDirection: 'column' }}>

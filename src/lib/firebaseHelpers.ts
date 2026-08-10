@@ -15,39 +15,32 @@ import {
 import { db } from './firebase';
 import { Film, Frame } from './firestoreSchema';
 
-// Upload image to Cloudinary
-// Upload image to Cloudinary with quality optimization
+// Upload image to Cloudinary through the Next.js API route
 export const uploadImage = async (
   file: File, 
   folder: string = 'film-lovers'
 ): Promise<string> => {
   const formData = new FormData();
   formData.append('file', file);
-  formData.append('upload_preset', 'film_lovers_preset');
   formData.append('folder', folder);
 
-  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-  
-  const response = await fetch(
-    `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-    {
-      method: 'POST',
-      body: formData,
-    }
-  );
+  const response = await fetch('/api/upload', {
+    method: 'POST',
+    body: formData,
+  });
 
   if (!response.ok) {
-    throw new Error('Image upload failed');
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error || 'Image upload failed');
   }
 
   const data = await response.json();
-  
-  // Add quality transformations to the URL
+
   const optimizedUrl = data.secure_url.replace(
     '/upload/',
     '/upload/q_95,f_auto,dpr_auto,c_fill,g_auto/'
   );
-  
+
   return optimizedUrl;
 };
 
@@ -64,17 +57,23 @@ export const addFilm = async (filmData: Omit<Film, 'id'>): Promise<string> => {
 
 // Get all films
 export const getAllFilms = async (includeExplicit: boolean = false): Promise<Film[]> => {
-  let q = query(collection(db, 'films'), orderBy('uploadedAt', 'desc'));
-  
-  if (!includeExplicit) {
-    q = query(collection(db, 'films'), where('isExplicit', '==', false), orderBy('uploadedAt', 'desc'));
-  }
-  
-  const querySnapshot = await getDocs(q);
-  return querySnapshot.docs.map(doc => ({
+  const querySnapshot = await getDocs(collection(db, 'films'));
+  let films = querySnapshot.docs.map(doc => ({
     id: doc.id,
     ...doc.data()
   } as Film));
+
+  if (!includeExplicit) {
+    films = films.filter(film => !film.isExplicit);
+  }
+
+  films.sort((a, b) => {
+    const aTime = a.uploadedAt instanceof Timestamp ? a.uploadedAt.toDate().getTime() : new Date(a.uploadedAt).getTime();
+    const bTime = b.uploadedAt instanceof Timestamp ? b.uploadedAt.toDate().getTime() : new Date(b.uploadedAt).getTime();
+    return bTime - aTime;
+  });
+
+  return films;
 };
 
 // Get single film by ID
@@ -111,22 +110,20 @@ export const getFramesByFilmId = async (
   filmId: string, 
   includeExplicit: boolean = false
 ): Promise<Frame[]> => {
-  let q = query(
-    collection(db, 'frames'), 
-    where('filmId', '==', filmId),
-    orderBy('order', 'asc')
-  );
-  
-  const querySnapshot = await getDocs(q);
+  const querySnapshot = await getDocs(collection(db, 'frames'));
   let frames = querySnapshot.docs.map(doc => ({
     id: doc.id,
     ...doc.data()
   } as Frame));
-  
+
+  frames = frames.filter(frame => frame.filmId === filmId);
+
   if (!includeExplicit) {
     frames = frames.filter(frame => !frame.isExplicit);
   }
-  
+
+  frames.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+
   return frames;
 };
 

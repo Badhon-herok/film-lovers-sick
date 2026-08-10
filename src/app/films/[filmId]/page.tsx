@@ -137,22 +137,24 @@ export default function FilmDetailsPage() {
             gap: 'clamp(16px, 5vw, 32px)',
             alignItems: 'start'
           }}>
-            {/* Poster */}
-            <div style={{ width: '100%' }}>
-              <Image
-                src={film.posterUrl}
-                alt={film.name}
-                width={200}
-                height={300}
-                style={{
-                  width: '100%',
-                  height: 'auto',
-                  borderRadius: '8px',
-                  border: '2px solid #8b0000',
-                  objectFit: 'cover'
-                }}
-              />
-            </div>
+            {/* Poster (only if available) */}
+            {film.posterUrl ? (
+              <div style={{ width: '100%' }}>
+                <Image
+                  src={film.posterUrl}
+                  alt={film.name}
+                  width={200}
+                  height={300}
+                  style={{
+                    width: '100%',
+                    height: 'auto',
+                    borderRadius: '8px',
+                    border: '2px solid #8b0000',
+                    objectFit: 'cover'
+                  }}
+                />
+              </div>
+            ) : null}
 
             {/* Film Info */}
             <div>
@@ -447,7 +449,9 @@ export default function FilmDetailsPage() {
                 gap: 'clamp(12px, 3vw, 20px)'
               }}>
 
-                {frames.map((frame) => (
+                {frames.map((frame) => {
+                  if (!frame.imageUrl) return null;
+                  return (
                   <div
                     key={frame.id}
                     style={{
@@ -459,19 +463,19 @@ export default function FilmDetailsPage() {
                       backgroundColor: '#000'
                     }}
                   >
-                        <Image
-                      src={frame.imageUrl}
-                      alt={frame.filmName}
-                      fill
-                      quality={100}              // ← Make sure it's 100
-                      priority={false}
-                      sizes="(max-width: 480px) 90vw, (max-width: 768px) 80vw, (max-width: 1024px) 60vw, 50vw"
-                      style={{
-                        objectFit: 'cover',
-                        cursor: 'pointer'
-                      }}
-                      onClick={() => setSelectedFrame(frame)}
-                    />
+                          <Image
+                            src={frame.imageUrl}
+                            alt={frame.filmName}
+                            fill
+                            quality={100}
+                            priority={false}
+                            sizes="(max-width: 480px) 90vw, (max-width: 768px) 80vw, (max-width: 1024px) 60vw, 50vw"
+                            style={{
+                              objectFit: 'cover',
+                              cursor: 'pointer'
+                            }}
+                            onClick={() => setSelectedFrame(frame)}
+                          />
 
                     
                     {frame.isExplicit && (
@@ -526,7 +530,8 @@ export default function FilmDetailsPage() {
                       </button>
                     )}
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </>
           )}

@@ -400,7 +400,7 @@ export default function Home() {
               gap: 'clamp(12px, 3vw, 20px)'
             }}>
 
-              {recentFrames.map((frame) => (
+              {recentFrames.filter(f => f.imageUrl).map((frame) => (
                 <Link key={frame.id} href={`/films/${frame.filmId}`}>
                   <div 
                     style={{ 

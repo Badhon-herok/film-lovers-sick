@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
-import { getFilmById, addFrame, uploadImage } from '@/lib/firebaseHelpers';
+import { getFilmById, getFramesByFilmId, addFrame, uploadImage } from '@/lib/firebaseHelpers';
 import { auth } from '@/lib/firebase';
 import { Film } from '@/lib/firestoreSchema';
 
@@ -18,6 +18,7 @@ export default function UploadFrames() {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [filmLoading, setFilmLoading] = useState(true);
+  const [nextOrderBase, setNextOrderBase] = useState(0);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -48,6 +49,24 @@ export default function UploadFrames() {
       fetchFilm();
     }
   }, [user, filmId, router]);
+
+  useEffect(() => {
+    const fetchNextOrder = async () => {
+      if (film?.id) {
+        try {
+          const existingFrames = await getFramesByFilmId(film.id, true);
+          setNextOrderBase(existingFrames.length);
+        } catch (error) {
+          console.error('Error fetching frames for order calculation:', error);
+          setNextOrderBase(film.frameCount || 0);
+        }
+      }
+    };
+
+    if (film) {
+      fetchNextOrder();
+    }
+  }, [film]);
 
   const handleFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -89,7 +108,7 @@ export default function UploadFrames() {
           imageUrl,
           isExplicit,
           uploadedAt: new Date(),
-          order: film.frameCount + i + 1,
+          order: nextOrderBase + i + 1,
         });
 
         setProgress(Math.round(((i + 1) / frameFiles.length) * 100));

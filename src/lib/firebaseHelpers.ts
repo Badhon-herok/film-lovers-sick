@@ -94,14 +94,6 @@ export const addFrame = async (frameData: Omit<Frame, 'id'>): Promise<string> =>
     uploadedAt: Timestamp.now(),
   });
   
-  // Update film's frame count
-  const filmRef = doc(db, 'films', frameData.filmId);
-  const filmDoc = await getDoc(filmRef);
-  if (filmDoc.exists()) {
-    const currentCount = filmDoc.data().frameCount || 0;
-    await updateDoc(filmRef, { frameCount: currentCount + 1 });
-  }
-  
   return docRef.id;
 };
 
@@ -170,14 +162,6 @@ export const getAllFrames = async (includeExplicit: boolean = false): Promise<Fr
 export const deleteFrame = async (frameId: string, filmId: string): Promise<void> => {
   // Delete frame from collection
   await deleteDoc(doc(db, 'frames', frameId));
-  
-  // Update film's frame count
-  const filmRef = doc(db, 'films', filmId);
-  const filmDoc = await getDoc(filmRef);
-  if (filmDoc.exists()) {
-    const currentCount = filmDoc.data().frameCount || 0;
-    await updateDoc(filmRef, { frameCount: Math.max(0, currentCount - 1) });
-  }
 };
 
 // Update film details - FIXED to handle null and empty values

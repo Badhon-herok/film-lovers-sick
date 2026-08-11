@@ -1,6 +1,7 @@
 # Film Lovers Are Sick People 🎬
 
 A curated digital shrine to cinema's most captivating moments. A modern web application for film enthusiasts to collect, organize, and showcase their favorite film frames and scenes.
+Browse the site at https://film-lovers-sick.vercel.app/
 
 ## Features ✨
 
@@ -185,6 +186,7 @@ This project is open source and available under the MIT License.
 - Powered by [Firebase](https://firebase.google.com)
 - Media hosting by [Cloudinary](https://cloudinary.com)
 - Deployed on [Vercel](https://vercel.com)
+- took help of Perplexity Ai and CoPilot Student
 
 ## Contact 📧
 
@@ -193,3 +195,11 @@ For questions or feedback, feel free to reach out!
 ---
 
 **Happy cinema collecting! 🎬🍿**
+
+<img width="1652" height="847" alt="image" src="https://github.com/user-attachments/assets/2e95d319-2cc4-4242-b269-11cedd04a1bc" />
+<img width="1299" height="860" alt="image" src="https://github.com/user-attachments/assets/b613784a-29e4-46b3-8e0a-b367e73d5dfe" />
+<img width="1093" height="862" alt="image" src="https://github.com/user-attachments/assets/8b669483-4c46-471a-a9bc-834df6cc3a01" />
+<img width="1213" height="856" alt="image" src="https://github.com/user-attachments/assets/d8ce5517-582c-4e44-966a-17fb2896a3a9" />
+<img width="1281" height="812" alt="image" src="https://github.com/user-attachments/assets/4c2b734e-12bc-4d4b-b163-d4e4bc1b40d9" />
+
+

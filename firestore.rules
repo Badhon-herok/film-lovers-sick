@@ -4,22 +4,21 @@ service cloud.firestore {
     // Allow public reads for films and frames so the public site can display content.
     match /films/{filmId} {
       allow get, list: if true;
-      // Restrict writes to authenticated users with an `admin` custom claim,
-      // but allow any authenticated user to increment the `frameCount` field (single-field increment) so uploads from editors succeed.
       allow create, delete: if request.auth != null && request.auth.token.admin == true;
       allow update: if request.auth != null && (
         request.auth.token.admin == true ||
-        // allow only updates that change exactly the `frameCount` field and increment it by 1
-        (request.resource.data.keys().hasOnly(['frameCount']) && request.resource.data.frameCount == resource.data.frameCount + 1)
+        (
+          request.resource.data.keys().hasOnly(['frameCount']) &&
+          request.resource.data.frameCount == resource.data.frameCount - 1
+        )
       );
     }
 
     match /frames/{frameId} {
       allow get, list: if true;
-      // Allow any authenticated user to create frames (so uploads from signed-in admins/editors succeed).
-      // Restrict update and delete to users with the `admin` custom claim.
       allow create: if request.auth != null;
-      allow update, delete: if request.auth != null && request.auth.token.admin == true;
+      allow delete: if request.auth != null;
+      allow update: if request.auth != null && request.auth.token.admin == true;
     }
 
     // Deny access to all other documents by default

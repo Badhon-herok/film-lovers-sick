@@ -99,7 +99,8 @@ export default function FilmDetailsPage() {
       alert('✓ Frame deleted successfully');
     } catch (error) {
       console.error('Error deleting frame:', error);
-      alert('Failed to delete frame');
+      const msg = error && (error as any).message ? (error as any).message : JSON.stringify(error);
+      alert('Failed to delete frame: ' + msg);
     } finally {
       setDeleting(null);
     }

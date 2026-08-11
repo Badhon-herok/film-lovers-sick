@@ -85,7 +85,8 @@ export default function UploadFrames() {
       router.push('/admin/manage-films');
     } catch (error) {
       console.error('Error uploading frames:', error);
-      alert('Failed to upload frames');
+      const msg = error && (error as any).message ? (error as any).message : JSON.stringify(error);
+      alert('Failed to upload frames: ' + msg);
     } finally {
       setUploading(false);
     }

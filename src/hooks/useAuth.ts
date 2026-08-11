@@ -16,6 +16,10 @@ export const useAuth = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
+      // Ensure token is fresh so recent custom claims (admin) are available
+      if (user) {
+        user.getIdToken(true).catch(() => { /* ignore errors here */ });
+      }
       setLoading(false);
     });
 

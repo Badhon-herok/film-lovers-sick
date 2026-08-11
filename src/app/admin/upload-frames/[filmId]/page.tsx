@@ -65,11 +65,16 @@ export default function UploadFrames() {
     try {
       // Refresh ID token to ensure latest custom claims (admin) are present
       if (auth.currentUser) {
+        console.log('Preparing upload as uid=', auth.currentUser.uid);
         try {
+          console.log('Refreshing ID token before upload...');
           await auth.currentUser.getIdToken(true);
+          console.log('Token refreshed');
         } catch (err) {
           console.warn('Failed to refresh ID token before upload:', err);
         }
+      } else {
+        console.warn('No auth.currentUser present before upload');
       }
       for (let i = 0; i < frameFiles.length; i++) {
         const file = frameFiles[i];

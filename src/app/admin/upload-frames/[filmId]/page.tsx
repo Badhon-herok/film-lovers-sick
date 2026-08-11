@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { getFilmById, addFrame, uploadImage } from '@/lib/firebaseHelpers';
+import { auth } from '@/lib/firebase';
 import { Film } from '@/lib/firestoreSchema';
 
 export default function UploadFrames() {
@@ -62,6 +63,14 @@ export default function UploadFrames() {
     setProgress(0);
 
     try {
+      // Refresh ID token to ensure latest custom claims (admin) are present
+      if (auth.currentUser) {
+        try {
+          await auth.currentUser.getIdToken(true);
+        } catch (err) {
+          console.warn('Failed to refresh ID token before upload:', err);
+        }
+      }
       for (let i = 0; i < frameFiles.length; i++) {
         const file = frameFiles[i];
         
